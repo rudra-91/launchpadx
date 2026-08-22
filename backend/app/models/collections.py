@@ -1,0 +1,6 @@
+ASSETS = "assets"
+USER_PROFILES = "user_profiles"
+PREDICTIONS = "predictions"
+SIMULATIONS = "simulations"
+NETWORK_NODES = "network_nodes"
+NETWORK_EDGES = "network_edges"

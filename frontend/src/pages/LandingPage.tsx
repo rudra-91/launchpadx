@@ -26,9 +26,14 @@ export function LandingPage() {
         <Link to="/" className="text-lg font-semibold tracking-tight text-white">
           INFRA<span className="text-accent">-X</span>
         </Link>
-        <Button variant="secondary" size="sm" onClick={() => navigate('/login')}>
-          Sign In
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" onClick={() => navigate('/signup')}>
+            Sign Up
+          </Button>
+          <Button variant="secondary" size="sm" onClick={() => navigate('/login')}>
+            Sign In
+          </Button>
+        </div>
       </header>
 
       <AetherFlowHero

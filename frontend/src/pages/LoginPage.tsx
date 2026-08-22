@@ -1,38 +1,49 @@
-import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Mail, Lock, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { useAuthStore } from '@/store/useAuthStore'
+import { getSupabaseConfigError } from '@/lib/supabase'
 
 export function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const login = useAuthStore((s) => s.login)
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
 
-  const [email, setEmail] = useState('admin@infra-x.gov')
-  const [password, setPassword] = useState('admin123')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  const configError = getSupabaseConfigError()
   const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? '/dashboard'
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(from, { replace: true })
+    }
+  }, [isAuthenticated, from, navigate])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+
+    if (configError) {
+      setError(configError)
+      return
+    }
+
     setLoading(true)
 
     try {
-      const success = await login(email, password)
-      if (success) {
-        navigate(from, { replace: true })
-      } else {
-        setError('Invalid email or password')
-      }
-    } catch {
-      setError('Login failed. Please try again.')
+      await login(email, password)
+      navigate(from, { replace: true })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -64,7 +75,7 @@ export function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               icon={<Mail className="h-4 w-4" />}
-              placeholder="admin@infra-x.gov"
+              placeholder="you@example.com"
               required
             />
             <Input
@@ -93,8 +104,11 @@ export function LoginPage() {
             </Button>
           </form>
 
-          <p className="mt-6 text-center text-xs text-muted">
-            Demo credentials: admin@infra-x.gov / admin123
+          <p className="mt-6 text-center text-sm text-muted">
+            Don&apos;t have an account?{' '}
+            <Link to="/signup" className="text-accent hover:underline">
+              Create one
+            </Link>
           </p>
         </GlassCard>
       </motion.div>

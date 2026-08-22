@@ -1,5 +1,6 @@
 import { API_BASE } from '@/lib/constants'
-import { useAuthStore } from '@/store/useAuthStore'
+import { getCurrentSession } from '@/services/auth'
+import { getSupabaseConfigError } from '@/lib/supabase'
 
 export class ApiError extends Error {
   status: number
@@ -11,18 +12,29 @@ export class ApiError extends Error {
   }
 }
 
+interface ApiEnvelope<T> {
+  success: boolean
+  data?: T
+  error?: {
+    code: string
+    message: string
+  }
+}
+
 export async function apiFetch<T>(
   endpoint: string,
   options: RequestInit = {},
 ): Promise<T> {
-  const token = useAuthStore.getState().token
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...(options.headers ?? {}),
+    ...(options.headers as Record<string, string> | undefined),
   }
 
-  if (token) {
-    ;(headers as Record<string, string>)['Authorization'] = `Bearer ${token}`
+  if (!getSupabaseConfigError()) {
+    const session = await getCurrentSession()
+    if (session?.access_token) {
+      headers.Authorization = `Bearer ${session.access_token}`
+    }
   }
 
   const response = await fetch(`${API_BASE}${endpoint}`, {
@@ -30,12 +42,26 @@ export async function apiFetch<T>(
     headers,
   })
 
-  if (!response.ok) {
+  const body = (await response.json()) as ApiEnvelope<T>
+
+  if (!response.ok || !body.success) {
     throw new ApiError(
-      `Request failed: ${response.statusText}`,
+      body.error?.message ?? `Request failed: ${response.statusText}`,
       response.status,
     )
   }
 
-  return response.json() as Promise<T>
+  return body.data as T
+}
+
+export function apiGet<T>(endpoint: string): Promise<T> {
+  return apiFetch<T>(endpoint.startsWith('/') ? endpoint : `/${endpoint}`)
+}
+
+export function apiPost<T>(endpoint: string, payload?: unknown): Promise<T> {
+  const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
+  return apiFetch<T>(path, {
+    method: 'POST',
+    body: payload ? JSON.stringify(payload) : undefined,
+  })
 }
