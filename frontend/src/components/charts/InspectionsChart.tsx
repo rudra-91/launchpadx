@@ -35,7 +35,7 @@ export function InspectionsChart({ data }: InspectionsChartProps) {
             wrapperStyle={{ fontSize: 11, color: '#A1A1AA' }}
           />
           <Bar dataKey="completed" fill="#60A5FA" radius={[4, 4, 0, 0]} name="Completed" />
-          <Bar dataKey="scheduled" fill="#38BDF8" radius={[4, 4, 0, 0]} fillOpacity={0.5} name="Scheduled" />
+          <Bar dataKey="scheduled" fill="#71717A" radius={[4, 4, 0, 0]} fillOpacity={0.7} name="Scheduled" />
         </BarChart>
       </ResponsiveContainer>
     </GlassCard>

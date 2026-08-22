@@ -1,58 +1,44 @@
 import { useEffect } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useLocation } from 'react-router-dom'
 import { useThemeStore } from '@/store/useThemeStore'
-
-gsap.registerPlugin(ScrollTrigger)
 
 export function useScrollReveal() {
   const reducedMotion = useThemeStore((s) => s.reducedMotion)
+  const location = useLocation()
 
   useEffect(() => {
-    if (reducedMotion) return
+    const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]')
+    const staggerItems = document.querySelectorAll<HTMLElement>('[data-stagger] > *')
 
-    const revealElements = gsap.utils.toArray<HTMLElement>('[data-reveal]')
-    revealElements.forEach((el) => {
-      gsap.fromTo(
-        el,
-        { opacity: 0, y: 24 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 88%',
-            toggleActions: 'play none none none',
-          },
-        },
-      )
-    })
-
-    const staggerContainers = gsap.utils.toArray<HTMLElement>('[data-stagger]')
-    staggerContainers.forEach((container) => {
-      const children = container.children
-      gsap.fromTo(
-        children,
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.5,
-          stagger: 0.08,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: container,
-            start: 'top 85%',
-            toggleActions: 'play none none none',
-          },
-        },
-      )
-    })
-
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill())
+    if (reducedMotion) {
+      revealItems.forEach((el) => el.classList.add('is-visible'))
+      staggerItems.forEach((el) => el.classList.add('is-visible'))
+      return
     }
-  }, [reducedMotion])
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -5% 0px' },
+    )
+
+    revealItems.forEach((el) => {
+      el.classList.add('scroll-reveal')
+      observer.observe(el)
+    })
+
+    staggerItems.forEach((el, index) => {
+      el.classList.add('scroll-reveal')
+      el.style.transitionDelay = `${index * 40}ms`
+      observer.observe(el)
+    })
+
+    return () => observer.disconnect()
+  }, [reducedMotion, location.pathname])
 }

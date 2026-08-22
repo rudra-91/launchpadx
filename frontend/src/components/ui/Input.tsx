@@ -11,7 +11,7 @@ export function Input({ label, error, icon, className, id, ...props }: InputProp
   const inputId = id ?? label?.toLowerCase().replace(/\s+/g, '-')
 
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2">
       {label && (
         <label htmlFor={inputId} className="block text-sm font-medium text-text-secondary">
           {label}
@@ -26,9 +26,9 @@ export function Input({ label, error, icon, className, id, ...props }: InputProp
         <input
           id={inputId}
           className={cn(
-            'w-full rounded-xl border border-border bg-surface/80 px-4 py-2.5 text-sm text-text-primary',
-            'placeholder:text-muted/60 transition-colors duration-200',
-            'focus:border-accent/40 focus:outline-none focus:ring-2 focus:ring-accent/20',
+            'w-full rounded-xl border border-border bg-elevated px-4 py-2 text-sm text-text-primary',
+            'placeholder:text-muted transition-colors duration-200',
+            'focus:border-border-strong focus:outline-none focus:ring-2 focus:ring-accent/20',
             icon && 'pl-10',
             error && 'border-critical/50',
             className,

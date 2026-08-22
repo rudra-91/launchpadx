@@ -11,6 +11,7 @@ import { SimulationPage } from '@/pages/SimulationPage'
 import { OptimizerPage } from '@/pages/OptimizerPage'
 import { AnalyticsPage } from '@/pages/AnalyticsPage'
 import { SettingsPage } from '@/pages/SettingsPage'
+import { LandingPage } from '@/pages/LandingPage'
 import { useAuthStore } from '@/store/useAuthStore'
 
 const queryClient = new QueryClient({
@@ -25,7 +26,7 @@ const queryClient = new QueryClient({
 
 function RootRedirect() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
-  return <Navigate to={isAuthenticated ? '/dashboard' : '/login'} replace />
+  return <Navigate to={isAuthenticated ? '/dashboard' : '/'} replace />
 }
 
 export default function App() {
@@ -33,6 +34,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route
             element={
@@ -50,7 +52,6 @@ export default function App() {
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
-          <Route path="/" element={<RootRedirect />} />
           <Route path="*" element={<RootRedirect />} />
         </Routes>
       </BrowserRouter>

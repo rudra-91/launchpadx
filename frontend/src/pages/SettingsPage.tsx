@@ -19,7 +19,7 @@ export function SettingsPage() {
 
       <GlassCard padding="lg" className="space-y-5" data-reveal>
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/15">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-accent/30 bg-accent/12">
             <User className="h-5 w-5 text-accent" />
           </div>
           <div>
@@ -34,7 +34,7 @@ export function SettingsPage() {
 
       <GlassCard padding="lg" className="space-y-5" data-reveal>
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/15">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-accent/30 bg-accent/12">
             <Bell className="h-5 w-5 text-accent" />
           </div>
           <div>
@@ -58,7 +58,7 @@ export function SettingsPage() {
 
       <GlassCard padding="lg" className="space-y-5" data-reveal>
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/15">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-accent/30 bg-accent/12">
             <Moon className="h-5 w-5 text-accent" />
           </div>
           <div>
@@ -79,7 +79,7 @@ export function SettingsPage() {
 
       <GlassCard padding="lg" className="space-y-3" data-reveal>
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/15">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-accent/30 bg-accent/12">
             <Shield className="h-5 w-5 text-accent" />
           </div>
           <div>

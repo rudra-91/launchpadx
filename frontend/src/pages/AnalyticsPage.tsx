@@ -66,7 +66,7 @@ export function AnalyticsPage() {
           title="Average Condition"
           value={metrics.averageCondition}
           icon={Gauge}
-          accent="cyan"
+          accent="blue"
         />
       </div>
 

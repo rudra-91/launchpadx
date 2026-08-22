@@ -51,16 +51,6 @@ export function NetworkGraph({
   return (
     <GlassCard padding="none" className="relative overflow-hidden">
       <svg viewBox="0 0 600 500" className="w-full min-h-[420px]">
-        <defs>
-          <filter id="network-glow">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
         {data.edges.map((edge) => {
           const source = getNodePos(edge.sourceId)
           const target = getNodePos(edge.targetId)
@@ -151,7 +141,6 @@ function NetworkNodeElement({
       onClick={onSelect}
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
-      filter={isSelected || isAffected ? 'url(#network-glow)' : undefined}
     >
       <circle
         cx={x}
@@ -224,7 +213,7 @@ export function CascadePanel({ cascade }: { cascade: CascadeImpact | null }) {
           {cascade.affectedRoads.map((road) => (
             <span
               key={road}
-              className="rounded-lg bg-accent-glow/10 px-2.5 py-1 font-mono text-xs text-accent-glow"
+              className="rounded-lg border border-accent/30 bg-accent/12 px-2 py-1 font-mono text-xs text-accent"
             >
               {road}
             </span>
@@ -240,7 +229,7 @@ export function CascadePanel({ cascade }: { cascade: CascadeImpact | null }) {
           {cascade.affectedHospitals.map((h) => (
             <span
               key={h}
-              className="rounded-lg bg-success/10 px-2.5 py-1 font-mono text-xs text-success"
+              className="rounded-lg border border-success/30 bg-success/12 px-2 py-1 font-mono text-xs text-success"
             >
               {h}
             </span>
@@ -274,7 +263,7 @@ export function NetworkLegend() {
           <span className="h-3 w-3 rounded-full bg-accent" /> Bridge nodes
         </div>
         <div className="flex items-center gap-2">
-          <span className="h-3 w-3 rounded-full bg-accent-glow" /> Road segments
+          <span className="h-3 w-3 rounded-full bg-accent" /> Road segments
         </div>
         <div className="flex items-center gap-2">
           <span className="h-3 w-3 rounded-full bg-success" /> Hospital access points

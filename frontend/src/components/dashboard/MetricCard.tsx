@@ -13,11 +13,11 @@ interface MetricCardProps {
 }
 
 const accentStyles = {
-  blue: 'text-accent bg-accent/10',
-  critical: 'text-critical bg-critical/10',
-  warning: 'text-warning bg-warning/10',
-  cyan: 'text-accent-glow bg-accent-glow/10',
-  success: 'text-success bg-success/10',
+  blue: 'text-accent bg-accent/12 border border-accent/30',
+  critical: 'text-critical bg-critical/12 border border-critical/30',
+  warning: 'text-warning bg-warning/12 border border-warning/30',
+  cyan: 'text-accent-glow bg-accent-glow/12 border border-accent-glow/30',
+  success: 'text-success bg-success/12 border border-success/30',
 }
 
 export function MetricCard({
@@ -31,10 +31,10 @@ export function MetricCard({
   const isPositiveTrend = trend && trend.value > 0
 
   return (
-    <GlassCard hover padding="md" className="group">
+    <GlassCard hover padding="md">
       <div className="flex items-start justify-between">
-        <div className="space-y-3">
-          <p className="text-sm text-text-secondary">{title}</p>
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-text-secondary">{title}</p>
           <p className="text-3xl font-semibold tracking-tight text-text-primary">{value}</p>
           {subtitle && (
             <p className="text-xs text-muted">{subtitle}</p>
@@ -55,11 +55,11 @@ export function MetricCard({
         </div>
         <div
           className={cn(
-            'flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-105',
+            'flex h-8 w-8 items-center justify-center rounded-lg',
             accentStyles[accent],
           )}
         >
-          <Icon className="h-5 w-5" />
+          <Icon className="h-4 w-4" />
         </div>
       </div>
     </GlassCard>

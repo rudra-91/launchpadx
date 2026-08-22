@@ -9,18 +9,17 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants = {
-  primary:
-    'bg-accent text-background hover:bg-accent-glow shadow-[0_0_20px_rgba(96,165,250,0.15)]',
+  primary: 'bg-accent text-background hover:brightness-[1.03] active:brightness-[0.97]',
   secondary:
-    'bg-elevated border border-border text-text-primary hover:border-accent/30 hover:bg-surface',
+    'bg-elevated border border-border text-text-primary hover:border-border-strong hover:bg-surface',
   ghost: 'text-text-secondary hover:text-text-primary hover:bg-white/5',
-  danger: 'bg-critical/15 text-critical border border-critical/30 hover:bg-critical/25',
+  danger: 'bg-critical/12 text-critical border border-critical/30 hover:bg-critical/16',
 }
 
 const sizes = {
-  sm: 'h-8 px-3 text-xs gap-1.5',
+  sm: 'h-8 px-3 text-xs gap-2',
   md: 'h-10 px-4 text-sm gap-2',
-  lg: 'h-12 px-6 text-base gap-2.5',
+  lg: 'h-12 px-6 text-base gap-2',
 }
 
 export function Button({

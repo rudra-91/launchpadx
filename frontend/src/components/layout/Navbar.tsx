@@ -33,13 +33,13 @@ export function Navbar({ title }: NavbarProps) {
           <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-critical" />
         </button>
 
-        <div className="flex items-center gap-2 rounded-xl border border-border bg-surface/50 px-3 py-1.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent/15">
+        <div className="flex items-center gap-2 rounded-xl border border-border bg-elevated px-3 py-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-accent/30 bg-accent/12">
             <User className="h-4 w-4 text-accent" />
           </div>
           <div className="hidden sm:block">
             <p className="text-sm font-medium text-text-primary">{user?.name ?? 'User'}</p>
-            <p className="text-[10px] text-text-secondary">{user?.email ?? ''}</p>
+            <p className="text-xs text-text-secondary">{user?.email ?? ''}</p>
           </div>
         </div>
 

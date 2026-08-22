@@ -51,10 +51,10 @@ export function getRiskColor(level: RiskLevel): string {
 
 export function getRiskBgClass(level: RiskLevel): string {
   const classes: Record<RiskLevel, string> = {
-    low: 'bg-success/15 text-success border-success/30',
-    medium: 'bg-warning/15 text-warning border-warning/30',
-    high: 'bg-orange-500/15 text-orange-400 border-orange-500/30',
-    critical: 'bg-critical/15 text-critical border-critical/30',
+    low: 'bg-success/12 text-success border border-success/30',
+    medium: 'bg-warning/12 text-warning border border-warning/30',
+    high: 'bg-orange-500/12 text-orange-400 border border-orange-500/30',
+    critical: 'bg-critical/12 text-critical border border-critical/30',
   }
   return classes[level]
 }

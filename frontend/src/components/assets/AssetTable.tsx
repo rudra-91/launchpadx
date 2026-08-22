@@ -44,13 +44,13 @@ export function AssetTable({ assets, onRowClick }: AssetTableProps) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border text-left text-xs text-text-secondary">
-              <th className="px-5 py-3 font-medium">Bridge ID</th>
-              <th className="px-5 py-3 font-medium">Name</th>
-              <th className="px-5 py-3 font-medium">Condition</th>
-              <th className="px-5 py-3 font-medium">Risk</th>
-              <th className="px-5 py-3 font-medium">Traffic</th>
-              <th className="px-5 py-3 font-medium">Status</th>
-              <th className="px-5 py-3 font-medium">Action</th>
+              <th className="px-6 py-3 font-medium">Bridge ID</th>
+              <th className="px-6 py-3 font-medium">Name</th>
+              <th className="px-6 py-3 font-medium">Condition</th>
+              <th className="px-6 py-3 font-medium">Risk</th>
+              <th className="px-6 py-3 font-medium">Traffic</th>
+              <th className="px-6 py-3 font-medium">Status</th>
+              <th className="px-6 py-3 font-medium">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -59,19 +59,19 @@ export function AssetTable({ assets, onRowClick }: AssetTableProps) {
                 key={asset.id}
                 className="border-b border-border/50 transition-colors hover:bg-white/[0.02]"
               >
-                <td className="px-5 py-3.5 font-mono text-accent">{asset.assetId}</td>
-                <td className="px-5 py-3.5 font-medium text-text-primary">{asset.name}</td>
-                <td className="px-5 py-3.5 w-36">
+                <td className="px-6 py-3 font-mono text-accent">{asset.assetId}</td>
+                <td className="px-6 py-3 font-medium text-text-primary">{asset.name}</td>
+                <td className="w-36 px-6 py-3">
                   <ConditionBar value={asset.condition} showLabel={false} size="sm" />
                 </td>
-                <td className="px-5 py-3.5">
+                <td className="px-6 py-3">
                   <RiskBadge level={getRiskLevel(asset.riskScore)} score={asset.riskScore} size="sm" />
                 </td>
-                <td className="px-5 py-3.5 text-text-secondary">
+                <td className="px-6 py-3 text-text-secondary">
                   {asset.traffic.toLocaleString()}/day
                 </td>
-                <td className="px-5 py-3.5 capitalize text-text-secondary">{asset.status}</td>
-                <td className="px-5 py-3.5">
+                <td className="px-6 py-3 capitalize text-text-secondary">{asset.status}</td>
+                <td className="px-6 py-3">
                   <Button
                     variant="ghost"
                     size="sm"

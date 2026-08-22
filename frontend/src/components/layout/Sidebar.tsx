@@ -42,12 +42,12 @@ export function Sidebar() {
               exit={{ opacity: 0 }}
               className="flex items-center gap-2"
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/15">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-accent/30 bg-accent/12">
                 <span className="text-sm font-bold text-accent">IX</span>
               </div>
               <div>
                 <p className="text-sm font-semibold text-text-primary">INFRA-X</p>
-                <p className="text-[10px] text-text-secondary">Risk Intelligence</p>
+                <p className="text-xs text-text-secondary">Risk Intelligence</p>
               </div>
             </motion.div>
           )}
@@ -55,7 +55,7 @@ export function Sidebar() {
         <button
           type="button"
           onClick={() => setCollapsed(!collapsed)}
-          className="rounded-lg p-1.5 text-text-secondary hover:bg-white/5 hover:text-text-primary"
+          className="rounded-lg p-2 text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
         >
           {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
         </button>
@@ -68,9 +68,9 @@ export function Sidebar() {
             to={item.path}
             className={({ isActive }) =>
               cn(
-                'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200',
+                'flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors duration-200',
                 isActive
-                  ? 'bg-accent/10 text-accent'
+                  ? 'border border-accent/30 bg-accent/12 text-accent'
                   : 'text-text-secondary hover:bg-white/5 hover:text-text-primary',
               )
             }

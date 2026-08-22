@@ -71,7 +71,7 @@ export function DashboardPage() {
             title="Average Condition"
             value={metrics.averageCondition}
             icon={Gauge}
-            accent="cyan"
+            accent="blue"
             subtitle="Out of 100"
             trend={{ value: -1.2, label: 'declining trend' }}
           />

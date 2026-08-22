@@ -11,7 +11,7 @@ interface GlassCardProps {
 const paddingMap = {
   none: '',
   sm: 'p-4',
-  md: 'p-5',
+  md: 'p-6',
   lg: 'p-6',
 }
 
@@ -26,7 +26,7 @@ export function GlassCard({
       className={cn(
         'glass-card',
         paddingMap[padding],
-        hover && 'transition-all duration-300 hover:border-accent/20 hover:shadow-[0_0_24px_rgba(56,189,248,0.08)]',
+        hover && 'glass-card-interactive',
         className,
       )}
     >
