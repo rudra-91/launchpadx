@@ -1,4 +1,15 @@
-export const API_BASE = import.meta.env.VITE_API_URL || '/api'
+/** Normalize so `https://host` and `https://host/api` both work. */
+function resolveApiBase(raw: string | undefined): string {
+  const value = (raw ?? '').trim()
+  if (!value) return '/api'
+
+  const trimmed = value.replace(/\/+$/, '')
+  if (trimmed === '/api' || trimmed.endsWith('/api')) return trimmed
+  if (/^https?:\/\//i.test(trimmed)) return `${trimmed}/api`
+  return trimmed
+}
+
+export const API_BASE = resolveApiBase(import.meta.env.VITE_API_URL)
 
 export const RISK_THRESHOLDS = {
   critical: 80,

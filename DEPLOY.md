@@ -98,6 +98,7 @@ Vite bakes env at **build** time — redeploy after changing these.
    - **Redirect URLs:** include `https://<your-app>.vercel.app/**` and keep `http://localhost:5173/**` for local dev.
 
 CORS already allows `FRONTEND_URL` plus local Vite ports (`5173` / `5174`).
+Production also allows any `https://*.vercel.app` origin via regex so previews work.
 
 ---
 

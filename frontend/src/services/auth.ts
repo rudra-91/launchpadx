@@ -54,12 +54,19 @@ function mapProfileToUser(profile: NonNullable<ApiMeResponse['data']>): User {
 }
 
 export async function fetchAuthMe(accessToken: string): Promise<User> {
-  const response = await fetch(`${API_BASE}/auth/me`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    },
-  })
+  let response: Response
+  try {
+    response = await fetch(`${API_BASE}/auth/me`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    })
+  } catch {
+    throw new Error(
+      `Cannot reach API at ${API_BASE}. Check VITE_API_URL and Render CORS (FRONTEND_URL must match your Vercel origin).`,
+    )
+  }
 
   if (!response.ok) {
     throw new Error('Unable to load your profile. Please try signing in again.')

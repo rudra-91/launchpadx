@@ -38,12 +38,28 @@ export async function apiFetch<T>(
     }
   }
 
-  const response = await fetch(`${API_BASE}${endpoint}`, {
-    ...options,
-    headers,
-  })
+  let response: Response
+  try {
+    response = await fetch(`${API_BASE}${endpoint}`, {
+      ...options,
+      headers,
+    })
+  } catch {
+    throw new ApiError(
+      `Cannot reach API at ${API_BASE}. Check VITE_API_URL and Render CORS (FRONTEND_URL).`,
+      0,
+    )
+  }
 
-  const body = (await response.json()) as ApiEnvelope<T>
+  let body: ApiEnvelope<T>
+  try {
+    body = (await response.json()) as ApiEnvelope<T>
+  } catch {
+    throw new ApiError(
+      `Invalid response from API (${response.status}). Is VITE_API_URL set to .../api?`,
+      response.status,
+    )
+  }
 
   if (!response.ok || !body.success) {
     throw new ApiError(

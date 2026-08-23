@@ -45,6 +45,8 @@ _cors_origins = list(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_cors_origins,
+    # Preview + production Vercel hosts (FRONTEND_URL still required for exact match preference)
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
