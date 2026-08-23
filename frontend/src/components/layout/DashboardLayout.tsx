@@ -2,18 +2,45 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { Navbar } from '@/components/layout/Navbar'
-import { NodeGraphBackground } from '@/components/layout/NodeGraphBackground'
 import { useScrollReveal } from '@/hooks/useScrollReveal'
 
-const pageTitles: Record<string, string> = {
-  '/dashboard': 'Dashboard',
-  '/inspections': 'Road Inspection',
-  '/assets': 'Assets',
-  '/network': 'Network',
-  '/simulation': 'Simulation',
-  '/optimizer': 'Optimizer',
-  '/analytics': 'Analytics',
-  '/settings': 'Settings',
+const pageMeta: Record<string, { title: string; subtitle?: string }> = {
+  '/dashboard': {
+    title: 'Dashboard',
+    subtitle: 'Live inspection intelligence across your road network',
+  },
+  '/inspections': {
+    title: 'Road Inspection',
+    subtitle: 'Monitor road conditions, damage detections, and inspection priorities.',
+  },
+  '/assets': {
+    title: 'Assets',
+    subtitle: 'Inspected road locations from the latest analysis',
+  },
+  '/risk': {
+    title: 'Risk',
+    subtitle: 'XGBoost risk classification and YOLO damage metrics',
+  },
+  '/network': {
+    title: 'Network',
+    subtitle: 'Road corridors and nearby critical infrastructure',
+  },
+  '/simulation': {
+    title: 'Simulation',
+    subtitle: 'What-if repair outcomes for inspected roads',
+  },
+  '/optimizer': {
+    title: 'Maintenance',
+    subtitle: 'Budget-aware prioritization from live inspection scores',
+  },
+  '/analytics': {
+    title: 'Analytics',
+    subtitle: 'Latest inspection snapshot metrics',
+  },
+  '/settings': {
+    title: 'Settings',
+    subtitle: 'Account preferences and application settings',
+  },
 }
 
 export function DashboardLayout() {
@@ -21,16 +48,15 @@ export function DashboardLayout() {
   useScrollReveal()
 
   const basePath = '/' + location.pathname.split('/')[1]
-  const title = pageTitles[basePath] ?? 'INFRA-X'
+  const meta = pageMeta[basePath] ?? { title: 'INFRA-X' }
 
   return (
     <div className="relative flex h-screen overflow-hidden bg-background">
-      <NodeGraphBackground />
       <div className="relative z-10 flex min-w-0 flex-1">
         <Sidebar />
         <div className="flex min-w-0 flex-1 flex-col">
-          <Navbar title={title} />
-          <main className="flex-1 overflow-y-auto p-6">
+          <Navbar title={meta.title} subtitle={meta.subtitle} />
+          <main className="flex-1 overflow-y-auto px-7 py-6 xl:px-9 xl:py-7">
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}
@@ -38,6 +64,7 @@ export function DashboardLayout() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15, ease: 'easeOut' }}
+                className="mx-auto w-full max-w-[1600px]"
               >
                 <Outlet />
               </motion.div>

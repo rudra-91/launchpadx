@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   FileSearch,
@@ -44,7 +44,6 @@ export function InspectionPage() {
     setStatus,
     setError,
     reset,
-    loadSampleLocations,
   } = useInspectionStore()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -68,14 +67,13 @@ export function InspectionPage() {
     }
   }
 
-  // Validation: At least 1 location, at least 1 image per location, valid lat/lon
   const isValidToAnalyze =
     locations.length > 0 &&
     locations.every(
       (loc) =>
         (imagesMap[loc.id] || []).length > 0 &&
-        !isNaN(loc.latitude) &&
-        !isNaN(loc.longitude),
+        !Number.isNaN(loc.latitude) &&
+        !Number.isNaN(loc.longitude),
     )
 
   const handleAnalyze = async () => {
@@ -91,11 +89,12 @@ export function InspectionPage() {
       if (data.locations.length > 0) {
         setSelectedLocation(data.locations[0].location_id)
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setStatus('error')
       const msg =
-        err.message ||
-        'Failed to connect to inspection server. Please ensure backend is running.'
+        err instanceof Error
+          ? err.message
+          : 'Failed to connect to inspection server. Please ensure backend is running.'
       setError(msg)
     }
   }
@@ -105,168 +104,147 @@ export function InspectionPage() {
     results?.locations[0] ||
     null
 
-  // Previews for selected location
   const selectedLocationPreviews = selectedResultLocation
     ? previewsMap[selectedResultLocation.location_id] || []
     : []
 
+  const kpi = useMemo(() => {
+    if (!results?.locations.length) return null
+    const locs = results.locations
+    const highRisk = locs.filter(
+      (l) =>
+        l.priority.priority_level === 'CRITICAL' || l.priority.priority_level === 'HIGH',
+    ).length
+    const detections = locs.reduce((sum, l) => sum + l.risk.detection_count, 0)
+    const avgPriority =
+      locs.reduce((sum, l) => sum + l.priority.priority_score, 0) / locs.length
+    return {
+      locations: locs.length,
+      highRisk,
+      detections,
+      avgPriority: avgPriority.toFixed(1),
+      topName: locs[0]?.name ?? '',
+      maxExposure: Math.max(...locs.map((l) => l.impact.entity_exposure_score)).toFixed(1),
+    }
+  }, [results])
+
   return (
     <div className="space-y-6">
-      {/* Top Title Banner */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between" data-reveal>
-        <div>
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-accent/40 bg-accent/15 text-accent">
-              <FileSearch className="h-4 w-4" />
-            </div>
-            <h1 className="text-xl font-bold tracking-tight text-text-primary">
-              ROAD INSPECTION INTELLIGENCE
-            </h1>
-          </div>
-          <p className="mt-1 text-xs text-text-secondary">
-            AI-powered road damage detection, XGBoost risk classification, and GIS infrastructure prioritization
-          </p>
-        </div>
+      {/* Actions toolbar */}
+      <div className="flex flex-wrap items-center justify-end gap-3">
+        {status === 'idle' && (
+          <button
+            type="button"
+            onClick={handleOpenAddModal}
+            className="inline-flex h-10 items-center gap-2 rounded-[10px] border border-border bg-elevated px-4 text-[13px] font-medium text-text-secondary transition-colors duration-150 hover:border-border-strong hover:text-text-primary"
+          >
+            <Plus className="h-4 w-4" />
+            Add Location
+          </button>
+        )}
 
-        <div className="flex items-center gap-3">
-          {status === 'idle' && (
-            <>
-              <button
-                type="button"
-                onClick={loadSampleLocations}
-                className="rounded-xl border border-border bg-surface/50 px-3.5 py-2 text-xs font-medium text-text-secondary hover:border-accent/40 hover:text-text-primary"
-              >
-                Load Sample Locations
-              </button>
-              <button
-                type="button"
-                onClick={handleOpenAddModal}
-                className="flex items-center gap-1.5 rounded-xl border border-accent/40 bg-accent/10 px-3.5 py-2 text-xs font-semibold text-accent hover:bg-accent/20"
-              >
-                <Plus className="h-4 w-4" />
-                Add Location
-              </button>
-            </>
-          )}
+        {results && (
+          <button
+            type="button"
+            onClick={reset}
+            className="inline-flex h-10 items-center gap-2 rounded-[10px] border border-border bg-elevated px-4 text-[13px] font-medium text-text-secondary transition-colors duration-150 hover:border-border-strong hover:text-text-primary"
+          >
+            <RotateCcw className="h-4 w-4" />
+            New Inspection
+          </button>
+        )}
 
-          {results && (
-            <button
-              type="button"
-              onClick={reset}
-              className="flex items-center gap-1.5 rounded-xl border border-border bg-surface px-3.5 py-2 text-xs font-medium text-text-secondary hover:text-text-primary"
-            >
-              <RotateCcw className="h-4 w-4" />
-              New Inspection
-            </button>
-          )}
-
-          {status === 'idle' && (
-            <button
-              type="button"
-              disabled={!isValidToAnalyze}
-              onClick={handleAnalyze}
-              className={`flex items-center gap-2 rounded-xl px-5 py-2 text-xs font-bold transition-all shadow-lg ${
-                isValidToAnalyze
-                  ? 'bg-accent text-background shadow-accent/20 hover:opacity-90 cursor-pointer'
-                  : 'bg-surface/50 text-text-secondary/50 cursor-not-allowed border border-border'
-              }`}
-            >
-              <Play className="h-4 w-4 fill-current" />
-              Analyze Road Network
-            </button>
-          )}
-        </div>
+        {status === 'idle' && (
+          <button
+            type="button"
+            disabled={!isValidToAnalyze}
+            onClick={handleAnalyze}
+            className={`inline-flex h-10 items-center gap-2 rounded-[10px] px-5 text-[13px] font-semibold transition-opacity duration-150 ${
+              isValidToAnalyze
+                ? 'bg-accent text-background hover:opacity-90'
+                : 'cursor-not-allowed border border-border bg-elevated/50 text-muted'
+            }`}
+          >
+            <Play className="h-4 w-4 fill-current" />
+            Analyze Road Network
+          </button>
+        )}
       </div>
 
-      {/* ERROR BANNER */}
       {error && (
-        <div className="flex items-center gap-3 rounded-2xl border border-critical/40 bg-critical/10 p-4 text-xs text-critical">
-          <AlertTriangle className="h-5 w-5 shrink-0" />
+        <div className="flex items-start gap-3 rounded-2xl border border-critical/25 bg-critical/8 px-5 py-4 text-[13px] text-critical">
+          <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
           <div>
             <p className="font-semibold">Analysis Failed</p>
-            <p>{error}</p>
+            <p className="mt-1 text-critical/90">{error}</p>
           </div>
         </div>
       )}
 
-      {/* INDETERMINATE PROCESSING OVERLAY */}
       {status === 'loading' && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="glass-card flex flex-col items-center justify-center p-12 text-center border border-accent/30"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex flex-col items-center justify-center rounded-2xl border border-border bg-surface px-8 py-16 text-center"
         >
           <div className="relative mb-6">
-            <Loader2 className="h-12 w-12 animate-spin text-accent" />
-            <Sparkles className="absolute -right-1 -top-1 h-5 w-5 text-amber-400 animate-pulse" />
+            <Loader2 className="h-11 w-11 animate-spin text-accent" />
+            <Sparkles className="absolute -right-1 -top-1 h-4 w-4 animate-pulse text-warning" />
           </div>
-
-          <h2 className="text-lg font-bold text-text-primary">
-            Running Multi-Location Road Inspection Analysis...
+          <h2 className="text-[20px] font-semibold text-text-primary">
+            Running multi-location road inspection analysis
           </h2>
-          <p className="mt-1 text-xs text-text-secondary max-w-md">
-            Querying YOLOv8 model, extracting 12 XGBoost tabular features, calculating GIS infrastructure exposure, and generating priority rankings.
+          <p className="mt-2 max-w-lg text-[14px] text-muted">
+            Querying YOLOv8, extracting XGBoost features, calculating GIS exposure, and ranking
+            priorities.
           </p>
-
-          <div className="mt-8 grid w-full max-w-xl grid-cols-2 gap-3 text-left sm:grid-cols-5 text-xs">
-            <div className="rounded-xl border border-accent/30 bg-accent/10 p-2.5 flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-accent shrink-0" />
-              <span>1. Image Upload</span>
-            </div>
-            <div className="rounded-xl border border-accent/30 bg-accent/10 p-2.5 flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-accent shrink-0" />
-              <span>2. YOLOv8 Detections</span>
-            </div>
-            <div className="rounded-xl border border-accent/30 bg-accent/10 p-2.5 flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-accent shrink-0" />
-              <span>3. XGBoost Risk</span>
-            </div>
-            <div className="rounded-xl border border-accent/30 bg-accent/10 p-2.5 flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-accent shrink-0" />
-              <span>4. GIS Impact</span>
-            </div>
-            <div className="rounded-xl border border-accent/30 bg-accent/10 p-2.5 flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-accent shrink-0" />
-              <span>5. Priority Ranking</span>
-            </div>
+          <div className="mt-8 grid w-full max-w-3xl grid-cols-2 gap-3 text-left sm:grid-cols-5">
+            {[
+              'Image Upload',
+              'YOLOv8 Detections',
+              'XGBoost Risk',
+              'GIS Impact',
+              'Priority Ranking',
+            ].map((step, i) => (
+              <div
+                key={step}
+                className="flex items-center gap-2 rounded-xl border border-border bg-elevated/50 px-3 py-2.5 text-[12px] text-text-secondary"
+              >
+                <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-accent" />
+                <span>
+                  {i + 1}. {step}
+                </span>
+              </div>
+            ))}
           </div>
         </motion.div>
       )}
 
-      {/* INPUT DRAFT LOCATIONS VIEW */}
       {status !== 'loading' && !results && (
         <div className="space-y-6">
           {locations.length === 0 ? (
-            <div className="glass-card flex flex-col items-center justify-center p-12 text-center">
-              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-surface">
-                <FileSearch className="h-7 w-7 text-accent" />
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-border bg-surface px-8 py-20 text-center">
+              <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-elevated text-accent">
+                <FileSearch className="h-7 w-7" />
               </div>
-              <h3 className="text-base font-semibold text-text-primary">
-                No Inspection Locations Added
+              <h3 className="text-[18px] font-semibold text-text-primary">
+                No inspection locations added
               </h3>
-              <p className="mt-1 text-xs text-text-secondary max-w-sm">
-                Add road inspection locations and upload damage photos to run YOLOv8 & XGBoost risk prioritization.
+              <p className="mt-2 max-w-md text-[14px] text-muted">
+                Add road inspection locations and upload damage photos to run YOLOv8 and XGBoost
+                risk prioritization.
               </p>
-              <div className="mt-6 flex gap-3">
-                <button
-                  type="button"
-                  onClick={loadSampleLocations}
-                  className="rounded-xl border border-border bg-surface px-4 py-2 text-xs font-medium text-text-secondary hover:text-text-primary"
-                >
-                  Load Sample Locations
-                </button>
-                <button
-                  type="button"
-                  onClick={handleOpenAddModal}
-                  className="flex items-center gap-1.5 rounded-xl bg-accent px-4 py-2 text-xs font-semibold text-background hover:opacity-90"
-                >
-                  <Plus className="h-4 w-4" />
-                  Add Location
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={handleOpenAddModal}
+                className="mt-7 inline-flex h-10 items-center gap-2 rounded-[10px] bg-accent px-5 text-[13px] font-semibold text-background transition-opacity duration-150 hover:opacity-90"
+              >
+                <Plus className="h-4 w-4" />
+                Add Location
+              </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3" data-stagger>
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
               {locations.map((loc) => {
                 const files = imagesMap[loc.id] || []
                 const previews = previewsMap[loc.id] || []
@@ -274,44 +252,43 @@ export function InspectionPage() {
                 return (
                   <div
                     key={loc.id}
-                    className="glass-card flex flex-col justify-between p-4 border border-border"
+                    className="flex flex-col rounded-2xl border border-border bg-surface p-5"
                   >
-                    <div>
-                      <div className="flex items-start justify-between border-b border-border pb-3">
-                        <div>
-                          <h4 className="text-sm font-bold text-text-primary">{loc.name}</h4>
-                          <p className="text-xs text-accent font-medium">{loc.road_name}</p>
-                          <p className="text-[11px] text-text-secondary mt-0.5">
-                            ({loc.latitude.toFixed(4)}, {loc.longitude.toFixed(4)})
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <button
-                            type="button"
-                            onClick={() => handleOpenEditModal(loc)}
-                            className="rounded-lg p-1.5 text-text-secondary hover:bg-white/10 hover:text-text-primary"
-                          >
-                            <Edit className="h-3.5 w-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => removeLocation(loc.id)}
-                            className="rounded-lg p-1.5 text-text-secondary hover:bg-critical/20 hover:text-critical"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
+                    <div className="flex items-start justify-between gap-3 border-b border-border pb-4">
+                      <div className="min-w-0">
+                        <h4 className="truncate text-[15px] font-semibold text-text-primary">
+                          {loc.name}
+                        </h4>
+                        <p className="mt-1 text-[13px] text-accent">{loc.road_name}</p>
+                        <p className="mt-1 text-[12px] text-muted">
+                          {loc.latitude.toFixed(4)}, {loc.longitude.toFixed(4)}
+                        </p>
                       </div>
-
-                      <div className="mt-4">
-                        <ImageUploader
-                          locationId={loc.id}
-                          files={files}
-                          previews={previews}
-                          onAddImages={(newFiles) => addImages(loc.id, newFiles)}
-                          onRemoveImage={(idx) => removeImage(loc.id, idx)}
-                        />
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => handleOpenEditModal(loc)}
+                          className="rounded-[8px] p-2 text-muted transition-colors duration-150 hover:bg-white/[0.04] hover:text-text-primary"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => removeLocation(loc.id)}
+                          className="rounded-[8px] p-2 text-muted transition-colors duration-150 hover:bg-critical/10 hover:text-critical"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
                       </div>
+                    </div>
+                    <div className="mt-4">
+                      <ImageUploader
+                        locationId={loc.id}
+                        files={files}
+                        previews={previews}
+                        onAddImages={(newFiles) => addImages(loc.id, newFiles)}
+                        onRemoveImage={(idx) => removeImage(loc.id, idx)}
+                      />
                     </div>
                   </div>
                 )
@@ -321,69 +298,71 @@ export function InspectionPage() {
         </div>
       )}
 
-      {/* RESULTS DASHBOARD VIEW */}
-      {results && (
+      {results && kpi && (
         <div className="space-y-6">
-          {/* Top Metric Cards */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4" data-stagger>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <MetricCard
-              title="Total Locations"
-              value={results.locations.length}
+              title="High Risk Locations"
+              value={kpi.highRisk}
+              icon={AlertTriangle}
+              accent="warning"
+              subtitle="HIGH or CRITICAL priority"
+            />
+            <MetricCard
+              title="Total Inspections"
+              value={kpi.locations}
               icon={Building2}
               accent="blue"
+              subtitle="Locations in latest run"
             />
             <MetricCard
-              title="Critical Risk Locations"
-              value={
-                results.locations.filter(
-                  (l) => l.priority.priority_level === 'CRITICAL' || l.priority.priority_level === 'HIGH',
-                ).length
-              }
-              icon={AlertTriangle}
-              accent="critical"
-              subtitle="High / Critical priority score"
-            />
-            <MetricCard
-              title="Highest Priority Score"
-              value={results.locations[0]?.priority.priority_score.toFixed(1) || '0'}
-              icon={Award}
-              accent="warning"
-              subtitle={`Rank #1: ${results.locations[0]?.name || ''}`}
-            />
-            <MetricCard
-              title="Max Entity Exposure"
-              value={
-                Math.max(...results.locations.map((l) => l.impact.entity_exposure_score)).toFixed(1)
-              }
+              title="Active Detections"
+              value={kpi.detections}
               icon={Activity}
+              accent="cyan"
+              subtitle="YOLO damage instances"
+            />
+            <MetricCard
+              title="Average Priority Score"
+              value={kpi.avgPriority}
+              icon={Award}
               accent="blue"
-              subtitle="Infrastructure proximity index"
+              subtitle={`Top: ${kpi.topName}`}
             />
           </div>
 
-          {/* Main Results Split Grid */}
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-            {/* Left: Ranked Leaderboard */}
-            <div className="lg:col-span-5">
+          {/* Primary workspace: list + map | details */}
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_360px] 2xl:grid-cols-[minmax(0,1fr)_380px]">
+            <div className="min-w-0 space-y-6">
               <RankedLeaderboard
                 locations={results.locations}
                 selectedLocationId={selectedLocationId}
                 onSelectLocation={(id) => setSelectedLocation(id)}
               />
+
+              <section className="overflow-hidden rounded-2xl border border-border bg-surface">
+                <div className="flex items-center justify-between border-b border-border px-5 py-4">
+                  <div>
+                    <h2 className="text-[17px] font-semibold text-text-primary">
+                      Spatial Intelligence
+                    </h2>
+                    <p className="mt-0.5 text-[13px] text-muted">
+                      Inspection coordinates and nearby infrastructure markers
+                    </p>
+                  </div>
+                </div>
+                <div className="p-3">
+                  <MapView
+                    inspectionLocations={results.locations}
+                    selectedLocationId={selectedLocationId}
+                    className="h-[480px] min-h-[480px] rounded-xl xl:h-[520px]"
+                    onLocationSelect={(id) => setSelectedLocation(id)}
+                  />
+                </div>
+              </section>
             </div>
 
-            {/* Middle: Map View */}
-            <div className="lg:col-span-4 glass-card relative overflow-hidden p-1 min-h-[480px]">
-              <MapView
-                inspectionLocations={results.locations}
-                selectedLocationId={selectedLocationId}
-                className="h-full min-h-[480px]"
-                onLocationSelect={(id) => setSelectedLocation(id)}
-              />
-            </div>
-
-            {/* Right: Inspection Detail Panel */}
-            <div className="lg:col-span-3 min-h-[480px]">
+            <div className="min-w-0 xl:sticky xl:top-0 xl:self-start xl:max-h-[calc(100vh-7.5rem)]">
               <InspectionDetailPanel
                 location={selectedResultLocation}
                 previewUrls={selectedLocationPreviews}
@@ -394,7 +373,6 @@ export function InspectionPage() {
         </div>
       )}
 
-      {/* Location Form Modal */}
       <LocationFormModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

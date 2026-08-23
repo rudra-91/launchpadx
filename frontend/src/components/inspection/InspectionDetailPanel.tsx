@@ -1,17 +1,13 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import {
   X,
   Building,
   Shield,
-  Activity,
-  Layers,
-  ChevronDown,
-  ChevronUp,
   Hospital,
   Flame,
   GraduationCap,
-  Sparkles,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react'
 import type { AnalyzedLocationOut, YOLODetection } from '@/types'
 import { cn } from '@/lib/utils'
@@ -22,6 +18,19 @@ interface InspectionDetailPanelProps {
   previewUrls?: string[]
 }
 
+function levelTone(level: string) {
+  switch (level.toUpperCase()) {
+    case 'CRITICAL':
+      return 'text-critical'
+    case 'HIGH':
+      return 'text-warning'
+    case 'MEDIUM':
+      return 'text-accent'
+    default:
+      return 'text-success'
+  }
+}
+
 export function InspectionDetailPanel({
   location,
   onClose,
@@ -30,7 +39,13 @@ export function InspectionDetailPanel({
   const [showTechnicalFeatures, setShowTechnicalFeatures] = useState(false)
   const [activeImageIdx, setActiveImageIdx] = useState(0)
 
-  if (!location) return null
+  if (!location) {
+    return (
+      <aside className="flex h-full min-h-[480px] items-center justify-center rounded-2xl border border-border bg-surface p-8 text-center">
+        <p className="text-[14px] text-muted">Select an inspection to view details</p>
+      </aside>
+    )
+  }
 
   const getEntityIcon = (type: string) => {
     switch (type.toLowerCase()) {
@@ -44,7 +59,7 @@ export function InspectionDetailPanel({
       case 'school':
         return <GraduationCap className="h-4 w-4 text-emerald-400" />
       default:
-        return <Building className="h-4 w-4 text-text-secondary" />
+        return <Building className="h-4 w-4 text-muted" />
     }
   }
 
@@ -52,289 +67,302 @@ export function InspectionDetailPanel({
   const currentPreviewUrl = previewUrls[activeImageIdx]
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 20 }}
-      className="glass-card flex h-full flex-col overflow-hidden p-5 border border-border"
-    >
-      {/* Header */}
-      <div className="flex items-start justify-between border-b border-border pb-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-accent/40 bg-accent/15 text-accent font-bold text-sm">
-            #{location.rank}
+    <aside className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface">
+      <div className="flex items-start justify-between gap-3 border-b border-border px-5 py-4">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2.5">
+            <span className="rounded-[8px] bg-elevated px-2 py-1 text-[12px] font-semibold text-text-secondary">
+              #{location.rank}
+            </span>
+            <h2 className="truncate text-[17px] font-semibold text-text-primary">
+              {location.name}
+            </h2>
           </div>
-          <div>
-            <h3 className="text-base font-bold text-text-primary">{location.name}</h3>
-            <p className="text-xs text-text-secondary">
-              GPS: ({location.latitude.toFixed(4)}, {location.longitude.toFixed(4)})
-            </p>
-          </div>
+          <p className="mt-1.5 text-[12px] text-muted">
+            {location.road_name ? `${location.road_name} · ` : ''}
+            {location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}
+          </p>
         </div>
-
         <button
           type="button"
           onClick={onClose}
-          className="rounded-lg p-1 text-text-secondary hover:bg-white/10 hover:text-text-primary"
+          className="rounded-[8px] p-1.5 text-muted transition-colors duration-150 hover:bg-white/[0.04] hover:text-text-primary"
+          aria-label="Close details"
         >
-          <X className="h-5 w-5" />
+          <X className="h-4 w-4" />
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto space-y-5 py-4 pr-1">
-        {/* PRIORITY & AI RISK SCORE CARDS */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-xl border border-accent/30 bg-accent/10 p-3">
-            <span className="text-[10px] font-semibold uppercase text-accent tracking-wider">
-              Priority Score
-            </span>
-            <div className="mt-1 flex items-baseline justify-between">
-              <span className="text-2xl font-extrabold text-text-primary">
-                {location.priority.priority_score.toFixed(1)}
-              </span>
-              <span className="rounded-md bg-accent/20 px-2 py-0.5 text-xs font-bold text-accent">
-                {location.priority.priority_level}
-              </span>
-            </div>
+      <div className="flex-1 space-y-6 overflow-y-auto px-5 py-5">
+        {/* Risk Summary */}
+        <section>
+          <h3 className="text-[13px] font-semibold uppercase tracking-wide text-muted">
+            Risk Summary
+          </h3>
+          <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-4">
+            <SummaryItem
+              label="Priority Score"
+              value={location.priority.priority_score.toFixed(1)}
+            />
+            <SummaryItem
+              label="Risk"
+              value={location.priority.priority_level}
+              valueClass={levelTone(location.priority.priority_level)}
+            />
+            <SummaryItem
+              label="XGBoost Class"
+              value={`Class ${location.risk.risk_prediction.class}`}
+            />
+            <SummaryItem
+              label="XGBoost Label"
+              value={location.risk.risk_prediction.label}
+              valueClass="text-[#A855F7]"
+            />
           </div>
+        </section>
 
-          <div className="rounded-xl border border-purple-500/30 bg-purple-500/10 p-3">
-            <span className="text-[10px] font-semibold uppercase text-purple-400 tracking-wider">
-              XGBoost Risk Class
-            </span>
-            <div className="mt-1 flex items-baseline justify-between">
-              <span className="text-2xl font-extrabold text-text-primary">
-                Class {location.risk.risk_prediction.class}
-              </span>
-              <span className="rounded-md bg-purple-500/20 px-2 py-0.5 text-xs font-bold text-purple-300">
-                {location.risk.risk_prediction.label}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* IMAGE & BBOX VISUALIZER SECTION */}
+        {/* Damage Detection */}
         {currentImage && (
-          <div className="rounded-xl border border-border bg-surface/40 p-3">
-            <div className="mb-2 flex items-center justify-between">
-              <span className="text-xs font-semibold text-text-primary flex items-center gap-1.5">
-                <Sparkles className="h-4 w-4 text-accent" />
-                YOLOv8 Damage Bounding Boxes
-              </span>
-              <span className="text-[11px] text-text-secondary">
-                Image {activeImageIdx + 1} of {location.images.length} ({currentImage.image_width}x{currentImage.image_height})
+          <section>
+            <div className="flex items-center justify-between gap-2">
+              <h3 className="text-[13px] font-semibold uppercase tracking-wide text-muted">
+                Damage Detection
+              </h3>
+              <span className="text-[12px] text-muted">
+                Image {activeImageIdx + 1}/{location.images.length}
               </span>
             </div>
 
-            {/* Bounding Box Image Canvas */}
-            <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-border bg-black">
+            <div className="relative mt-3 aspect-[4/3] w-full overflow-hidden rounded-xl border border-border bg-background">
               {currentPreviewUrl ? (
                 <img
                   src={currentPreviewUrl}
-                  alt="Analyzed Road"
+                  alt="Analyzed road"
                   className="h-full w-full object-contain"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center text-xs text-text-secondary">
-                  Uploaded Road Image ({currentImage.image_key})
+                <div className="flex h-full w-full items-center justify-center text-[13px] text-muted">
+                  Uploaded image ({currentImage.image_key})
                 </div>
               )}
 
-              {/* Bounding Box Overlays */}
               {currentImage.detections.map((det: YOLODetection, idx: number) => {
                 const { x1, y1, x2, y2 } = det.bbox
-                const w_img = maxVal(1, currentImage.image_width)
-                const h_img = maxVal(1, currentImage.image_height)
-
-                // Scale bounding boxes relative to percentage
-                const left = x1 > 1.0 ? (x1 / w_img) * 100 : x1 * 100
-                const top = y1 > 1.0 ? (y1 / h_img) * 100 : y1 * 100
-                const width = x1 > 1.0 ? ((x2 - x1) / w_img) * 100 : (x2 - x1) * 100
-                const height = y1 > 1.0 ? ((y2 - y1) / h_img) * 100 : (y2 - y1) * 100
-
+                const wImg = Math.max(1, currentImage.image_width)
+                const hImg = Math.max(1, currentImage.image_height)
+                const left = x1 > 1 ? (x1 / wImg) * 100 : x1 * 100
+                const top = y1 > 1 ? (y1 / hImg) * 100 : y1 * 100
+                const width = x1 > 1 ? ((x2 - x1) / wImg) * 100 : (x2 - x1) * 100
+                const height = y1 > 1 ? ((y2 - y1) / hImg) * 100 : (y2 - y1) * 100
                 const isPothole = det.damage_type === 'D40'
-                const boxColor = isPothole ? 'rgba(239, 68, 68, 0.9)' : 'rgba(245, 158, 11, 0.9)'
+                const boxColor = isPothole ? 'rgba(239, 68, 68, 0.95)' : 'rgba(245, 158, 11, 0.95)'
 
                 return (
                   <div
                     key={idx}
+                    className="pointer-events-none absolute"
                     style={{
-                      position: 'absolute',
                       left: `${left}%`,
                       top: `${top}%`,
                       width: `${width}%`,
                       height: `${height}%`,
                       border: `2px solid ${boxColor}`,
-                      backgroundColor: `${boxColor}22`,
-                      boxShadow: `0 0 10px ${boxColor}`,
-                      pointerEvents: 'none',
+                      backgroundColor: `${boxColor}18`,
                     }}
                   >
                     <span
-                      style={{
-                        position: 'absolute',
-                        top: '-18px',
-                        left: '0',
-                        background: boxColor,
-                        color: '#000',
-                        fontSize: '9px',
-                        fontWeight: 'bold',
-                        padding: '1px 4px',
-                        borderRadius: '2px',
-                        whiteSpace: 'nowrap',
-                      }}
+                      className="absolute -top-5 left-0 whitespace-nowrap rounded px-1.5 py-0.5 text-[10px] font-semibold text-black"
+                      style={{ background: boxColor }}
                     >
-                      {det.damage_type}: {det.damage_name} ({(det.confidence * 100).toFixed(0)}%)
+                      {det.damage_type}: {det.damage_name}
                     </span>
                   </div>
                 )
               })}
             </div>
 
-            {/* Image selector tabs */}
             {location.images.length > 1 && (
-              <div className="mt-2 flex gap-1.5 overflow-x-auto">
+              <div className="mt-3 flex flex-wrap gap-2">
                 {location.images.map((img, idx) => (
                   <button
                     key={img.image_key}
                     type="button"
                     onClick={() => setActiveImageIdx(idx)}
                     className={cn(
-                      'rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors',
+                      'rounded-[8px] px-3 py-1.5 text-[12px] font-medium transition-colors duration-150',
                       activeImageIdx === idx
-                        ? 'bg-accent text-background font-semibold'
-                        : 'bg-surface text-text-secondary hover:text-text-primary',
+                        ? 'bg-accent text-background'
+                        : 'bg-elevated text-text-secondary hover:text-text-primary',
                     )}
                   >
-                    Image {idx + 1} ({img.detections.length} det)
+                    Image {idx + 1} · {img.detections.length} det
                   </button>
                 ))}
               </div>
             )}
-          </div>
+          </section>
         )}
 
-        {/* DETAILED DAMAGE BREAKDOWN */}
-        <div className="rounded-xl border border-border bg-surface/30 p-3.5 space-y-2.5">
-          <div className="flex items-center justify-between border-b border-border/50 pb-2">
-            <span className="text-xs font-semibold text-text-primary flex items-center gap-1.5">
-              <Activity className="h-4 w-4 text-warning" />
-              YOLO Damage Breakdown ({location.risk.detection_count} Detections)
-            </span>
-            <span className="text-xs font-bold text-warning">
-              Damage Score: {location.risk.damage_score.toFixed(1)}
+        {/* Detection Breakdown */}
+        <section>
+          <div className="flex items-center justify-between">
+            <h3 className="text-[13px] font-semibold uppercase tracking-wide text-muted">
+              Detection Breakdown
+            </h3>
+            <span className="text-[12px] text-muted">
+              Score {location.risk.damage_score.toFixed(1)} · {location.risk.detection_count}{' '}
+              total
             </span>
           </div>
-
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="flex items-center justify-between rounded-lg bg-black/20 p-2">
-              <span className="text-text-secondary">D00 Longitudinal</span>
-              <span className="font-bold text-text-primary">{location.risk.damage_breakdown.D00}</span>
-            </div>
-            <div className="flex items-center justify-between rounded-lg bg-black/20 p-2">
-              <span className="text-text-secondary">D10 Transverse</span>
-              <span className="font-bold text-text-primary">{location.risk.damage_breakdown.D10}</span>
-            </div>
-            <div className="flex items-center justify-between rounded-lg bg-black/20 p-2">
-              <span className="text-text-secondary">D20 Alligator Crack</span>
-              <span className="font-bold text-text-primary">{location.risk.damage_breakdown.D20}</span>
-            </div>
-            <div className="flex items-center justify-between rounded-lg bg-black/20 p-2">
-              <span className="text-text-secondary">D40 Pothole</span>
-              <span className="font-bold text-critical">{location.risk.damage_breakdown.D40}</span>
-            </div>
+          <div className="mt-3 space-y-2">
+            <DamageRow code="D00" label="Longitudinal" count={location.risk.damage_breakdown.D00} />
+            <DamageRow code="D10" label="Transverse" count={location.risk.damage_breakdown.D10} />
+            <DamageRow
+              code="D20"
+              label="Alligator Crack"
+              count={location.risk.damage_breakdown.D20}
+            />
+            <DamageRow
+              code="D40"
+              label="Pothole"
+              count={location.risk.damage_breakdown.D40}
+              emphasize
+            />
           </div>
-        </div>
+        </section>
 
-        {/* INFRASTRUCTURE IMPACT & NEARBY ENTITIES */}
-        <div className="rounded-xl border border-border bg-surface/30 p-3.5 space-y-3">
-          <div className="flex items-center justify-between border-b border-border/50 pb-2">
-            <span className="text-xs font-semibold text-text-primary flex items-center gap-1.5">
-              <Building className="h-4 w-4 text-accent" />
-              GIS Infrastructure Exposure
+        {/* GIS */}
+        <section>
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="text-[13px] font-semibold uppercase tracking-wide text-muted">
+              Nearby Infrastructure
+            </h3>
+            <span className="text-[12px] text-muted">
+              Exp {location.impact.entity_exposure_score.toFixed(1)} · Conn{' '}
+              {location.impact.connectivity_score.toFixed(1)}
             </span>
-            <div className="flex gap-2 text-[11px]">
-              <span className="rounded bg-accent/15 px-2 py-0.5 text-accent font-semibold">
-                Exp: {location.impact.entity_exposure_score.toFixed(1)}
-              </span>
-              <span className="rounded bg-blue-500/15 px-2 py-0.5 text-blue-400 font-semibold">
-                Conn: {location.impact.connectivity_score.toFixed(1)}
-              </span>
-            </div>
           </div>
 
           {location.impact.nearby_entities.length > 0 ? (
-            <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+            <div className="mt-3 max-h-52 space-y-2 overflow-y-auto pr-1">
               {location.impact.nearby_entities.map((entity, idx) => (
                 <div
-                  key={idx}
-                  className="flex items-center justify-between rounded-lg border border-border/50 bg-black/20 p-2 text-xs"
+                  key={`${entity.name}-${idx}`}
+                  className="flex items-center justify-between gap-3 rounded-xl bg-elevated/50 px-3 py-2.5"
                 >
-                  <div className="flex items-center gap-2">
+                  <div className="flex min-w-0 items-center gap-2.5">
                     {getEntityIcon(entity.type)}
-                    <span className="font-medium text-text-primary">{entity.name}</span>
+                    <span className="truncate text-[13px] font-medium text-text-primary">
+                      {entity.name}
+                    </span>
                   </div>
-                  <span className="text-[11px] font-semibold text-text-secondary">
-                    {entity.distance_m.toFixed(0)}m away
+                  <span className="shrink-0 font-mono text-[12px] text-muted">
+                    {entity.distance_m.toFixed(0)}m
                   </span>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-xs text-text-secondary italic">
-              No critical infrastructure entities detected within 2000m radius.
+            <p className="mt-3 text-[13px] text-muted">
+              No critical infrastructure within the GIS search radius.
             </p>
           )}
-        </div>
+        </section>
 
-        {/* COMPACT EXPANDABLE TECHNICAL MODEL FEATURES */}
-        <div className="rounded-xl border border-border bg-surface/30">
+        {/* Technical */}
+        <section className="rounded-xl border border-border">
           <button
             type="button"
             onClick={() => setShowTechnicalFeatures(!showTechnicalFeatures)}
-            className="flex w-full items-center justify-between p-3 text-xs font-semibold text-text-secondary hover:text-text-primary"
+            className="flex w-full items-center justify-between px-3.5 py-3 text-[13px] font-medium text-text-secondary transition-colors duration-150 hover:text-text-primary"
           >
-            <span className="flex items-center gap-1.5">
-              <Layers className="h-4 w-4 text-purple-400" />
-              Technical Details (12 XGBoost Features)
-            </span>
-            {showTechnicalFeatures ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            <span>Technical details (12 XGBoost features)</span>
+            {showTechnicalFeatures ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4" />
+            )}
           </button>
 
           {showTechnicalFeatures && (
-            <div className="border-t border-border/50 p-3 grid grid-cols-2 gap-2 text-[11px]">
-              <div>
-                <span className="text-text-secondary">Total Damage Area:</span>{' '}
-                <span className="font-bold text-text-primary">
-                  {(location.risk.risk_features.total_damage_area_ratio * 100).toFixed(2)}%
-                </span>
-              </div>
-              <div>
-                <span className="text-text-secondary">Avg BBox Area:</span>{' '}
-                <span className="font-bold text-text-primary">
-                  {(location.risk.risk_features.avg_bbox_area_ratio * 100).toFixed(2)}%
-                </span>
-              </div>
-              <div>
-                <span className="text-text-secondary">Max BBox Area:</span>{' '}
-                <span className="font-bold text-text-primary">
-                  {(location.risk.risk_features.max_bbox_area_ratio * 100).toFixed(2)}%
-                </span>
-              </div>
-              <div>
-                <span className="text-text-secondary">D40 Area Ratio:</span>{' '}
-                <span className="font-bold text-text-primary">
-                  {(location.risk.risk_features.d40_area_ratio * 100).toFixed(2)}%
-                </span>
-              </div>
+            <div className="grid grid-cols-2 gap-3 border-t border-border px-3.5 py-3 text-[12px]">
+              <TechItem
+                label="Total damage area"
+                value={`${(location.risk.risk_features.total_damage_area_ratio * 100).toFixed(2)}%`}
+              />
+              <TechItem
+                label="Avg bbox area"
+                value={`${(location.risk.risk_features.avg_bbox_area_ratio * 100).toFixed(2)}%`}
+              />
+              <TechItem
+                label="Max bbox area"
+                value={`${(location.risk.risk_features.max_bbox_area_ratio * 100).toFixed(2)}%`}
+              />
+              <TechItem
+                label="D40 area ratio"
+                value={`${(location.risk.risk_features.d40_area_ratio * 100).toFixed(2)}%`}
+              />
             </div>
           )}
-        </div>
+        </section>
       </div>
-    </motion.div>
+    </aside>
   )
 }
 
-function maxVal(a: number, b: number): number {
-  return a > b ? a : b
+function SummaryItem({
+  label,
+  value,
+  valueClass,
+}: {
+  label: string
+  value: string
+  valueClass?: string
+}) {
+  return (
+    <div>
+      <p className="text-[11px] uppercase tracking-wide text-muted">{label}</p>
+      <p className={cn('mt-1 text-[22px] font-semibold tracking-tight text-text-primary', valueClass)}>
+        {value}
+      </p>
+    </div>
+  )
+}
+
+function DamageRow({
+  code,
+  label,
+  count,
+  emphasize,
+}: {
+  code: string
+  label: string
+  count: number
+  emphasize?: boolean
+}) {
+  return (
+    <div className="flex items-center justify-between rounded-xl bg-elevated/40 px-3.5 py-3">
+      <div className="flex items-center gap-2.5">
+        <span className="font-mono text-[12px] font-semibold text-muted">{code}</span>
+        <span className="text-[13px] text-text-secondary">{label}</span>
+      </div>
+      <span
+        className={cn(
+          'text-[15px] font-semibold',
+          emphasize && count > 0 ? 'text-critical' : 'text-text-primary',
+        )}
+      >
+        {count}
+      </span>
+    </div>
+  )
+}
+
+function TechItem({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <p className="text-muted">{label}</p>
+      <p className="mt-0.5 font-semibold text-text-primary">{value}</p>
+    </div>
+  )
 }

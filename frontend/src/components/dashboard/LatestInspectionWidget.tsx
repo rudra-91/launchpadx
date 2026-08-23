@@ -10,7 +10,6 @@ import {
   Shield,
   GraduationCap,
   Wrench,
-  AlertTriangle,
 } from 'lucide-react'
 import { useInspectionStore } from '@/store/useInspectionStore'
 

@@ -15,7 +15,7 @@ interface AssetCategoriesChartProps {
 export function AssetCategoriesChart({ data }: AssetCategoriesChartProps) {
   return (
     <GlassCard padding="md" className="h-[280px]">
-      <h3 className="mb-4 text-sm font-medium text-text-primary">Asset Categories</h3>
+      <h3 className="mb-4 text-sm font-medium text-text-primary">Damage Categories</h3>
       <ResponsiveContainer width="100%" height="85%">
         <PieChart>
           <Pie

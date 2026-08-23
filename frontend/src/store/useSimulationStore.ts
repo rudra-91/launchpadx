@@ -22,7 +22,7 @@ interface SimulationState {
 }
 
 const initialState = {
-  selectedAssetId: 'B01',
+  selectedAssetId: '',
   repairQuality: 50,
   budget: 150000,
   strategy: 'safety' as const,

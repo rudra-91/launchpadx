@@ -39,7 +39,7 @@ export function LandingPage() {
       <AetherFlowHero
         badge="Infrastructure Intelligence Platform"
         title="INFRA-X"
-        description="Monitor bridges, roads, and hospitals in real time. Predict risk, simulate failures, and optimize maintenance with a unified command dashboard."
+        description="Monitor inspected roads and nearby critical infrastructure in real time. Predict risk, simulate repairs, and prioritize maintenance from live AI inspections."
         ctaLabel="Launch Dashboard"
         onCtaClick={() => navigate('/login')}
       />

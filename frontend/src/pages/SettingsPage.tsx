@@ -88,8 +88,8 @@ export function SettingsPage() {
           </div>
         </div>
         <p className="text-xs leading-relaxed text-muted">
-          Temporal Infrastructure Risk Intelligence platform for Mecklenburg County.
-          Predictive models are mocked — ready for AI integration.
+          INFRA-X road inspection intelligence — live YOLO damage detection, XGBoost risk
+          classification, GIS infrastructure discovery, and priority ranking.
         </p>
       </GlassCard>
     </div>

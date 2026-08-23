@@ -2,7 +2,7 @@ import { useEffect, useRef, useMemo } from 'react'
 import * as maplibregl from 'maplibre-gl'
 import type { FeatureCollection } from 'geojson'
 import {
-  CHARLOTTE_CENTER,
+  DEFAULT_MAP_CENTER,
   DEFAULT_MAP_ZOOM,
   FOCUS_ZOOM,
   getMarkerColor,
@@ -77,7 +77,7 @@ export function MapView({
     const initialCenter: [number, number] =
       inspectionLocations && inspectionLocations.length > 0
         ? [inspectionLocations[0].longitude, inspectionLocations[0].latitude]
-        : CHARLOTTE_CENTER
+        : DEFAULT_MAP_CENTER
 
     const map = new maplibregl.Map({
       container: mapContainer.current,
@@ -248,16 +248,20 @@ export function MapView({
 
       const marker = new maplibregl.Marker({ element: el })
         .setLngLat(coords)
-        .setPopup(
-          new maplibregl.Popup({ offset: 12, closeButton: false }).setHTML(`
-            <div style="font-family: Inter, sans-serif;">
-              <strong style="color: #FAFAFA;">${props.name ?? ''}</strong>
-              <div style="color: #A1A1AA; font-size: 12px; margin-top: 4px;">
-                ${type} · Risk ${props.riskScore ?? 0}
+          .setPopup(
+            new maplibregl.Popup({ offset: 12, closeButton: false }).setHTML(`
+              <div style="font-family: Inter, sans-serif; padding: 4px;">
+                <strong style="color: #FAFAFA; font-size: 13px;">${props.name ?? ''}</strong>
+                <div style="color: ${color}; font-weight: bold; font-size: 11px; margin-top: 2px;">
+                  Risk ${props.riskScore ?? 0} (${riskLevel})
+                </div>
+                <div style="color: #A1A1AA; font-size: 11px; margin-top: 2px;">
+                  ${props.priorityLevel ? `Priority ${props.priorityScore ?? ''} (${props.priorityLevel}) · ` : ''}
+                  ${props.detections !== undefined ? `YOLO ${props.detections}` : type}
+                </div>
               </div>
-            </div>
-          `),
-        )
+            `),
+          )
         .addTo(map)
 
       el.addEventListener('click', () => {

@@ -2,6 +2,13 @@ export type RiskLevel = 'low' | 'medium' | 'high' | 'critical'
 
 export type AssetType = 'bridge' | 'road' | 'hospital'
 
+export type NetworkNodeType =
+  | AssetType
+  | 'fire_station'
+  | 'police_station'
+  | 'school'
+  | 'infrastructure'
+
 export type AssetStatus = 'operational' | 'monitoring' | 'maintenance' | 'critical'
 
 export interface User {
@@ -50,8 +57,9 @@ export interface Road {
 export interface NetworkNode {
   id: string
   label: string
-  type: AssetType
+  type: NetworkNodeType
   riskScore: number
+  distance_m?: number
   x?: number
   y?: number
 }
@@ -269,6 +277,7 @@ export interface AnalyzedLocationOut {
   rank: number
   location_id: string
   name: string
+  road_name?: string
   latitude: number
   longitude: number
   images_analyzed: number
@@ -276,6 +285,22 @@ export interface AnalyzedLocationOut {
   risk: LocationRiskOut
   impact: ImpactOut
   priority: PriorityOut
+}
+
+export interface InspectionMetricsSnapshot {
+  totalLocations: number
+  highCriticalCount: number
+  totalDetections: number
+  totalImages: number
+  nearbyEntityCount: number
+  averageRiskScore: number
+  maxRiskScore: number
+  highestPriorityName: string | null
+  highestPriorityScore: number | null
+  damageTotals: DamageBreakdown
+  riskDistribution: DistributionPoint[]
+  damageCategoryCounts: CategoryPoint[]
+  averagePriorityScore: number
 }
 
 export interface InspectionAnalysisDataOut {

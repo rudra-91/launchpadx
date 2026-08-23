@@ -17,7 +17,7 @@ interface FeatureImportanceChartProps {
 export function FeatureImportanceChart({ data }: FeatureImportanceChartProps) {
   return (
     <GlassCard padding="md" className="h-[320px]">
-      <h3 className="mb-4 text-sm font-medium text-text-primary">Feature Importance</h3>
+      <h3 className="mb-4 text-sm font-medium text-text-primary">XGBoost Feature Snapshot</h3>
       <ResponsiveContainer width="100%" height="88%">
         <BarChart data={data} layout="vertical" margin={{ left: 20 }}>
           <CartesianGrid strokeDasharray="3 3" horizontal={false} />

@@ -1,6 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
 import { TrendingDown, TrendingUp } from 'lucide-react'
-import { GlassCard } from '@/components/ui/GlassCard'
 import { cn } from '@/lib/utils'
 
 interface MetricCardProps {
@@ -12,12 +11,12 @@ interface MetricCardProps {
   trend?: { value: number; label: string }
 }
 
-const accentStyles = {
-  blue: 'text-accent bg-accent/12 border border-accent/30',
-  critical: 'text-critical bg-critical/12 border border-critical/30',
-  warning: 'text-warning bg-warning/12 border border-warning/30',
-  cyan: 'text-accent-glow bg-accent-glow/12 border border-accent-glow/30',
-  success: 'text-success bg-success/12 border border-success/30',
+const iconTone = {
+  blue: 'text-accent',
+  critical: 'text-critical',
+  warning: 'text-warning',
+  cyan: 'text-accent-glow',
+  success: 'text-success',
 }
 
 export function MetricCard({
@@ -31,16 +30,14 @@ export function MetricCard({
   const isPositiveTrend = trend && trend.value > 0
 
   return (
-    <GlassCard hover padding="md">
-      <div className="flex items-start justify-between">
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-text-secondary">{title}</p>
-          <p className="text-3xl font-semibold tracking-tight text-text-primary">{value}</p>
-          {subtitle && (
-            <p className="text-xs text-muted">{subtitle}</p>
-          )}
+    <div className="rounded-2xl border border-border bg-surface p-5 transition-colors duration-150 hover:border-border-strong">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 space-y-3">
+          <p className="kpi-label">{title}</p>
+          <p className="text-[30px] font-semibold tracking-tight text-text-primary">{value}</p>
+          {subtitle && <p className="text-[13px] text-muted">{subtitle}</p>}
           {trend && (
-            <div className="flex items-center gap-1.5 text-xs">
+            <div className="flex items-center gap-1.5 text-[12px]">
               {isPositiveTrend ? (
                 <TrendingUp className="h-3.5 w-3.5 text-success" />
               ) : (
@@ -55,13 +52,13 @@ export function MetricCard({
         </div>
         <div
           className={cn(
-            'flex h-8 w-8 items-center justify-center rounded-lg',
-            accentStyles[accent],
+            'flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-elevated',
+            iconTone[accent],
           )}
         >
-          <Icon className="h-4 w-4" />
+          <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
         </div>
       </div>
-    </GlassCard>
+    </div>
   )
 }

@@ -287,6 +287,7 @@ async def analyze_inspections(
                 rank=1,
                 location_id=loc.location_id,
                 name=loc.name,
+                road_name=loc.road_name,
                 latitude=loc.latitude,
                 longitude=loc.longitude,
                 images_analyzed=len(analyzed_images),

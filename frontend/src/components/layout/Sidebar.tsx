@@ -8,6 +8,7 @@ import {
   BarChart3,
   Settings,
   FileSearch,
+  AlertTriangle,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
@@ -19,9 +20,10 @@ const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/inspections', label: 'Road Inspection', icon: FileSearch },
   { path: '/assets', label: 'Assets', icon: Building2 },
+  { path: '/risk', label: 'Risk', icon: AlertTriangle },
   { path: '/network', label: 'Network', icon: Network },
   { path: '/simulation', label: 'Simulation', icon: FlaskConical },
-  { path: '/optimizer', label: 'Optimizer', icon: Target },
+  { path: '/optimizer', label: 'Maintenance', icon: Target },
   { path: '/analytics', label: 'Analytics', icon: BarChart3 },
   { path: '/settings', label: 'Settings', icon: Settings },
 ]
@@ -31,25 +33,27 @@ export function Sidebar() {
 
   return (
     <motion.aside
-      animate={{ width: collapsed ? 72 : 240 }}
-      transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="glass-surface flex h-full shrink-0 flex-col border-r border-border"
+      animate={{ width: collapsed ? 72 : 252 }}
+      transition={{ duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className="relative z-20 flex h-full shrink-0 flex-col border-r border-border bg-surface"
     >
-      <div className="flex h-16 items-center justify-between border-b border-border px-4">
+      <div className="flex h-[72px] items-center justify-between px-4">
         <AnimatePresence mode="wait">
           {!collapsed && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex items-center gap-2"
+              className="flex min-w-0 items-center gap-3"
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-accent/30 bg-accent/12">
-                <span className="text-sm font-bold text-accent">IX</span>
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-accent/15 text-accent">
+                <span className="text-sm font-bold tracking-tight">IX</span>
               </div>
-              <div>
-                <p className="text-sm font-semibold text-text-primary">INFRA-X</p>
-                <p className="text-xs text-text-secondary">Risk Intelligence</p>
+              <div className="min-w-0">
+                <p className="truncate text-[15px] font-semibold tracking-tight text-text-primary">
+                  INFRA-X
+                </p>
+                <p className="truncate text-xs text-muted">Risk Intelligence</p>
               </div>
             </motion.div>
           )}
@@ -57,28 +61,31 @@ export function Sidebar() {
         <button
           type="button"
           onClick={() => setCollapsed(!collapsed)}
-          className="rounded-lg p-2 text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
+          className="rounded-[10px] p-2 text-muted transition-colors duration-150 hover:bg-white/[0.04] hover:text-text-primary"
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
         </button>
       </div>
 
-      <nav className="flex-1 space-y-1 p-3">
+      <div className="mx-4 border-t border-border" />
+
+      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
         {navItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
             className={({ isActive }) =>
               cn(
-                'flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors duration-200',
+                'flex h-11 items-center gap-3 rounded-[10px] px-3.5 text-[14px] font-medium transition-colors duration-150',
                 isActive
-                  ? 'border border-accent/30 bg-accent/12 text-accent'
-                  : 'text-text-secondary hover:bg-white/5 hover:text-text-primary',
+                  ? 'bg-accent/12 text-accent'
+                  : 'text-text-secondary hover:bg-white/[0.04] hover:text-text-primary',
               )
             }
           >
-            <item.icon className="h-5 w-5 shrink-0" />
-            {!collapsed && <span>{item.label}</span>}
+            <item.icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} />
+            {!collapsed && <span className="truncate">{item.label}</span>}
           </NavLink>
         ))}
       </nav>

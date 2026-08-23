@@ -11,10 +11,10 @@ interface InspectionState {
   previewsMap: Record<string, string[]>
   selectedLocationId: string | null
   results: InspectionAnalysisDataOut | null
+  analyzedAt: string | null
   status: AnalysisStatus
   error: string | null
 
-  // Actions
   addLocation: (loc: DraftLocationItem) => void
   removeLocation: (id: string) => void
   updateLocation: (id: string, updated: Partial<DraftLocationItem>) => void
@@ -25,17 +25,17 @@ interface InspectionState {
   setStatus: (st: AnalysisStatus) => void
   setError: (err: string | null) => void
   reset: () => void
-  loadSampleLocations: () => void
 }
 
 export const useInspectionStore = create<InspectionState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       locations: [],
       imagesMap: {},
       previewsMap: {},
       selectedLocationId: null,
       results: null,
+      analyzedAt: null,
       status: 'idle',
       error: null,
 
@@ -109,7 +109,13 @@ export const useInspectionStore = create<InspectionState>()(
         }),
 
       setSelectedLocation: (id) => set({ selectedLocationId: id }),
-      setResults: (res) => set({ results: res }),
+      setResults: (res) =>
+        set({
+          results: res,
+          analyzedAt: res ? new Date().toISOString() : null,
+          status: res ? 'success' : 'idle',
+          error: null,
+        }),
       setStatus: (st) => set({ status: st }),
       setError: (err) => set({ error: err }),
 
@@ -124,47 +130,18 @@ export const useInspectionStore = create<InspectionState>()(
             previewsMap: {},
             selectedLocationId: null,
             results: null,
+            analyzedAt: null,
             status: 'idle',
             error: null,
           }
         }),
-
-      loadSampleLocations: () => {
-        const state = get()
-        state.reset()
-
-        const samples: DraftLocationItem[] = [
-          {
-            id: 'loc_aiims',
-            name: 'AIIMS Hospital Corridor',
-            latitude: 28.5672,
-            longitude: 77.21,
-            road_name: 'Aurobindo Marg',
-          },
-          {
-            id: 'loc_cp',
-            name: 'Connaught Place Outer Circle',
-            latitude: 28.6315,
-            longitude: 77.2167,
-            road_name: 'Radial Road 1',
-          },
-          {
-            id: 'loc_central',
-            name: 'Central Delhi Block',
-            latitude: 28.6139,
-            longitude: 77.209,
-            road_name: 'Rajpath Avenue',
-          },
-        ]
-
-        set({ locations: samples })
-      },
     }),
     {
       name: 'launchpadx-inspection-storage',
       partialize: (state) => ({
         results: state.results,
         selectedLocationId: state.selectedLocationId,
+        analyzedAt: state.analyzedAt,
       }),
     },
   ),

@@ -14,6 +14,7 @@ import { SimulationPage } from '@/pages/SimulationPage'
 import { OptimizerPage } from '@/pages/OptimizerPage'
 import { AnalyticsPage } from '@/pages/AnalyticsPage'
 import { SettingsPage } from '@/pages/SettingsPage'
+import { RiskPage } from '@/pages/RiskPage'
 import { LandingPage } from '@/pages/LandingPage'
 import { AuthInitializer } from '@/components/auth/AuthInitializer'
 import { useAuthStore } from '@/store/useAuthStore'
@@ -56,6 +57,7 @@ export default function App() {
               <Route path="/inspections" element={<InspectionPage />} />
               <Route path="/assets" element={<AssetsPage />} />
               <Route path="/assets/:id" element={<AssetDetailPage />} />
+              <Route path="/risk" element={<RiskPage />} />
               <Route path="/network" element={<NetworkPage />} />
               <Route path="/simulation" element={<SimulationPage />} />
               <Route path="/optimizer" element={<OptimizerPage />} />

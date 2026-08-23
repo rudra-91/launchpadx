@@ -100,6 +100,7 @@ class AnalyzedLocationOut(BaseModel):
     rank: int = 1
     location_id: str
     name: str
+    road_name: str = ""
     latitude: float
     longitude: float
     images_analyzed: int

@@ -53,8 +53,8 @@ export function getMarkerColor(riskLevel: RiskLevel): string {
   return colors[riskLevel]
 }
 
-export const CHARLOTTE_CENTER: [number, number] = [-80.8431, 35.2271]
+export const DEFAULT_MAP_CENTER: [number, number] = [77.209, 28.6139]
 
-export const DEFAULT_MAP_ZOOM = 10.5
+export const DEFAULT_MAP_ZOOM = 11
 
 export const FOCUS_ZOOM = 14
