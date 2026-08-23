@@ -32,7 +32,7 @@ Ensure `main` on GitHub includes the YOLO-in-backend merge and LFS models.
 | Repo | your GitHub `launchpadx` |
 | Root Directory | `backend` |
 | Runtime | Python 3.11+ |
-| Build Command | `pip install torch --index-url https://download.pytorch.org/whl/cpu && pip install -r requirements.txt` |
+| Build Command | `pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu && pip install -r requirements.txt` |
 | Start Command | `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
 | Health Check Path | `/api/health` |
 | Instance | **Standard** or higher (YOLO+torch needs more than free 512MB) |

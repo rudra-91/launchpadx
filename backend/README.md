@@ -25,8 +25,8 @@ python -m venv .venv
 # Windows
 .venv\Scripts\activate
 
-# Prefer CPU PyTorch on cloud / lean local installs:
-pip install torch --index-url https://download.pytorch.org/whl/cpu
+# Prefer CPU PyTorch on cloud / lean local installs (torch + torchvision must match):
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 pip install -r requirements.txt
 copy .env.example .env
 ```
@@ -66,7 +66,7 @@ uvicorn app.main:app --reload --port 8000
 | Setting | Value |
 |---------|--------|
 | Root Directory | `backend` |
-| Build Command | `pip install torch --index-url https://download.pytorch.org/whl/cpu && pip install -r requirements.txt` |
+| Build Command | `pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu && pip install -r requirements.txt` |
 | Start Command | `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
 
 No separate YOLO service. Do **not** set `YOLO_SERVICE_URL`.

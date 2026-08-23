@@ -63,7 +63,14 @@ def load_yolo_model(force: bool = False) -> Any:
 
     try:
         from ultralytics import YOLO
+        import torch
+        import torchvision
 
+        logger.info(
+            "PyTorch %s, torchvision %s",
+            torch.__version__,
+            torchvision.__version__,
+        )
         logger.info("Loading YOLOv8m model from: %s", path_str)
         _model = YOLO(path_str)
         _model_path_loaded = path_str
