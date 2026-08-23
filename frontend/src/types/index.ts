@@ -172,3 +172,112 @@ export interface MapFeatureProperties {
   condition?: number
   riskLevel: RiskLevel
 }
+
+// ============================================================================
+// ROAD INSPECTION PIPELINE TYPES (FastAPI / YOLO / XGBoost / GIS Contract)
+// ============================================================================
+
+export interface InspectionLocationInput {
+  location_id: string
+  name: string
+  latitude: number
+  longitude: number
+  road_name: string
+  image_keys: string[]
+}
+
+export interface YOLOBoundingBox {
+  x1: number
+  y1: number
+  x2: number
+  y2: number
+}
+
+export interface YOLODetection {
+  damage_type: string
+  damage_name: string
+  confidence: number
+  bbox: YOLOBoundingBox
+}
+
+export interface AnalyzedImageOut {
+  image_key: string
+  detections: YOLODetection[]
+  image_width: number
+  image_height: number
+  preview_url?: string
+}
+
+export interface DamageBreakdown {
+  D00: number
+  D10: number
+  D20: number
+  D40: number
+}
+
+export interface RiskPredictionOut {
+  class: number
+  label: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
+  model: string
+}
+
+export interface RiskFeaturesOut {
+  d00_count: number
+  d10_count: number
+  d20_count: number
+  d40_count: number
+  total_detections: number
+  d00_area_ratio: number
+  d10_area_ratio: number
+  d20_area_ratio: number
+  d40_area_ratio: number
+  total_damage_area_ratio: number
+  avg_bbox_area_ratio: number
+  max_bbox_area_ratio: number
+}
+
+export interface LocationRiskOut {
+  damage_score: number
+  risk_score: number
+  risk_level: string
+  detection_count: number
+  damage_breakdown: DamageBreakdown
+  risk_prediction: RiskPredictionOut
+  risk_features: RiskFeaturesOut
+}
+
+export interface NearbyEntityOut {
+  type: string
+  name: string
+  latitude: number
+  longitude: number
+  distance_m: number
+}
+
+export interface ImpactOut {
+  nearby_entities: NearbyEntityOut[]
+  entity_exposure_score: number
+  connectivity_score: number
+}
+
+export interface PriorityOut {
+  priority_score: number
+  priority_level: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
+}
+
+export interface AnalyzedLocationOut {
+  rank: number
+  location_id: string
+  name: string
+  latitude: number
+  longitude: number
+  images_analyzed: number
+  images: AnalyzedImageOut[]
+  risk: LocationRiskOut
+  impact: ImpactOut
+  priority: PriorityOut
+}
+
+export interface InspectionAnalysisDataOut {
+  locations: AnalyzedLocationOut[]
+}

@@ -1,6 +1,6 @@
 """Seed INFRA-X infrastructure data into MongoDB."""
 
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from pymongo.database import Database
 
@@ -77,7 +77,7 @@ def seed(db: Database, *, force: bool = False) -> None:
 
     remove_legacy_collections(db)
 
-    now = datetime.now(UTC)
+    now = datetime.now(timezone.utc)
     db[USER_PROFILES].insert_one(
         {
             "supabase_user_id": "00000000-0000-4000-8000-000000000001",

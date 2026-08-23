@@ -8,6 +8,7 @@ from app.api.routes import (
     assets,
     auth,
     health,
+    inspections,
     maintenance,
     metrics,
     network,
@@ -15,6 +16,7 @@ from app.api.routes import (
     risk,
     simulation,
 )
+
 from app.core.config import get_settings
 from app.core.database import ensure_indexes, get_database, ping_database
 from app.core.responses import AppError
@@ -28,7 +30,13 @@ app = FastAPI(title="INFRA-X API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_url, "http://localhost:5173", "http://localhost:5174"],
+    allow_origins=[
+        settings.frontend_url,
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:5174",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -47,8 +55,12 @@ async def app_error_handler(_: Request, exc: AppError):
 @app.on_event("startup")
 def on_startup() -> None:
     db = get_database()
-    ensure_indexes(db)
     mongo_ok = ping_database()
+    if mongo_ok:
+        try:
+            ensure_indexes(db)
+        except Exception as exc:
+            logger.warning("Could not ensure database indexes: %s", exc)
     logger.info(
         "MongoDB connected=%s db=%s ML_PROVIDER=%s",
         mongo_ok,
@@ -60,6 +72,7 @@ def on_startup() -> None:
 app.include_router(health.router)
 app.include_router(auth.router)
 app.include_router(assets.router)
+app.include_router(inspections.router)
 app.include_router(predictions.router)
 app.include_router(risk.router)
 app.include_router(maintenance.router)

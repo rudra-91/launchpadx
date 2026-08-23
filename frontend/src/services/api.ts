@@ -25,8 +25,9 @@ export async function apiFetch<T>(
   endpoint: string,
   options: RequestInit = {},
 ): Promise<T> {
+  const isFormData = options.body instanceof FormData
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
+    ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
     ...(options.headers as Record<string, string> | undefined),
   }
 
@@ -63,5 +64,13 @@ export function apiPost<T>(endpoint: string, payload?: unknown): Promise<T> {
   return apiFetch<T>(path, {
     method: 'POST',
     body: payload ? JSON.stringify(payload) : undefined,
+  })
+}
+
+export function apiPostForm<T>(endpoint: string, formData: FormData): Promise<T> {
+  const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
+  return apiFetch<T>(path, {
+    method: 'POST',
+    body: formData,
   })
 }

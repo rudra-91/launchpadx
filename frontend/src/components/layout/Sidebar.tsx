@@ -7,6 +7,7 @@ import {
   Target,
   BarChart3,
   Settings,
+  FileSearch,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
@@ -16,6 +17,7 @@ import { cn } from '@/lib/utils'
 
 const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/inspections', label: 'Road Inspection', icon: FileSearch },
   { path: '/assets', label: 'Assets', icon: Building2 },
   { path: '/network', label: 'Network', icon: Network },
   { path: '/simulation', label: 'Simulation', icon: FlaskConical },

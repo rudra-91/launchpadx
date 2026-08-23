@@ -7,6 +7,7 @@ import { useScrollReveal } from '@/hooks/useScrollReveal'
 
 const pageTitles: Record<string, string> = {
   '/dashboard': 'Dashboard',
+  '/inspections': 'Road Inspection',
   '/assets': 'Assets',
   '/network': 'Network',
   '/simulation': 'Simulation',
@@ -28,20 +29,20 @@ export function DashboardLayout() {
       <div className="relative z-10 flex min-w-0 flex-1">
         <Sidebar />
         <div className="flex min-w-0 flex-1 flex-col">
-        <Navbar title={title} />
-        <main className="flex-1 overflow-y-auto p-6">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={location.pathname}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15, ease: 'easeOut' }}
-            >
-              <Outlet />
-            </motion.div>
-          </AnimatePresence>
-        </main>
+          <Navbar title={title} />
+          <main className="flex-1 overflow-y-auto p-6">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={location.pathname}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15, ease: 'easeOut' }}
+              >
+                <Outlet />
+              </motion.div>
+            </AnimatePresence>
+          </main>
         </div>
       </div>
     </div>

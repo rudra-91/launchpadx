@@ -1,5 +1,5 @@
 import json
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from pymongo.database import Database
 
@@ -8,6 +8,7 @@ from app.models.collections import ASSETS, PREDICTIONS
 from app.schemas.asset import asset_to_dict
 from app.schemas.prediction import PredictionOut
 from app.services.ml.prediction_service import PredictionService
+
 
 
 def list_assets(
@@ -83,7 +84,7 @@ def run_prediction(db: Database, asset_id: str) -> PredictionOut:
             "risk_level": result.riskLevel,
             "confidence": result.confidence,
             "feature_importance": [f.model_dump() for f in result.featureImportance],
-            "created_at": datetime.now(UTC),
+            "created_at": datetime.now(timezone.utc),
         }
     )
     return result

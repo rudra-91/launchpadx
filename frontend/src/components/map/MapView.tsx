@@ -10,21 +10,27 @@ import {
 } from '@/lib/mapUtils'
 import { getRiskLevel } from '@/lib/utils'
 import { useFilterStore } from '@/store/useFilterStore'
-import type { AssetType, RiskLevel } from '@/types'
+import type { AssetType, RiskLevel, AnalyzedLocationOut } from '@/types'
 import { cn } from '@/lib/utils'
 
 interface MapViewProps {
-  geojson: FeatureCollection
+  geojson?: FeatureCollection
+  inspectionLocations?: AnalyzedLocationOut[]
+  selectedLocationId?: string | null
   focusNode?: MapSearchResult | null
   className?: string
   onFeatureClick?: (id: string, type: AssetType) => void
+  onLocationSelect?: (id: string) => void
 }
 
 export function MapView({
   geojson,
+  inspectionLocations,
+  selectedLocationId,
   focusNode,
   className,
   onFeatureClick,
+  onLocationSelect,
 }: MapViewProps) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const mapRef = useRef<maplibregl.Map | null>(null)
@@ -40,6 +46,7 @@ export function MapView({
   } = useFilterStore()
 
   const filteredFeatures = useMemo(() => {
+    if (!geojson) return []
     return geojson.features.filter((feature) => {
       const props = feature.properties ?? {}
       const type = props.type as AssetType
@@ -67,6 +74,11 @@ export function MapView({
   useEffect(() => {
     if (!mapContainer.current || mapRef.current) return
 
+    const initialCenter: [number, number] =
+      inspectionLocations && inspectionLocations.length > 0
+        ? [inspectionLocations[0].longitude, inspectionLocations[0].latitude]
+        : CHARLOTTE_CENTER
+
     const map = new maplibregl.Map({
       container: mapContainer.current,
       style: {
@@ -89,8 +101,8 @@ export function MapView({
           },
         ],
       },
-      center: CHARLOTTE_CENTER,
-      zoom: DEFAULT_MAP_ZOOM,
+      center: initialCenter,
+      zoom: inspectionLocations && inspectionLocations.length > 0 ? 11 : DEFAULT_MAP_ZOOM,
       attributionControl: false,
     })
 
@@ -105,10 +117,110 @@ export function MapView({
     }
   }, [])
 
+  // Render Inspection Markers
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
 
+    if (inspectionLocations && inspectionLocations.length > 0) {
+      markersRef.current.forEach((m) => m.remove())
+      markersRef.current = []
+
+      const bounds = new maplibregl.LngLatBounds()
+
+      inspectionLocations.forEach((loc) => {
+        const isSelected = selectedLocationId === loc.location_id
+        const level = loc.priority.priority_level
+        bounds.extend([loc.longitude, loc.latitude])
+
+        let levelColor = '#3b82f6'
+        if (level === 'CRITICAL') levelColor = '#ef4444'
+        else if (level === 'HIGH') levelColor = '#f59e0b'
+        else if (level === 'MEDIUM') levelColor = '#3b82f6'
+        else if (level === 'LOW') levelColor = '#10b981'
+
+        const el = document.createElement('div')
+        el.className = 'inspection-marker'
+        el.style.cssText = `
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 32px;
+          height: 32px;
+          padding: 0 8px;
+          background: ${levelColor};
+          color: #000;
+          font-weight: bold;
+          font-size: 12px;
+          border-radius: 16px;
+          border: 2px solid rgba(255, 255, 255, 0.9);
+          cursor: pointer;
+          box-shadow: 0 0 14px ${levelColor}aa;
+          transform: ${isSelected ? 'scale(1.25)' : 'scale(1)'};
+          transition: transform 0.2s;
+          z-index: ${isSelected ? '20' : '10'};
+        `
+        el.innerHTML = `#${loc.rank} · ${loc.priority.priority_score.toFixed(0)}`
+
+        el.addEventListener('click', () => {
+          onLocationSelect?.(loc.location_id)
+        })
+
+        const marker = new maplibregl.Marker({ element: el })
+          .setLngLat([loc.longitude, loc.latitude])
+          .setPopup(
+            new maplibregl.Popup({ offset: 12, closeButton: false }).setHTML(`
+              <div style="font-family: Inter, sans-serif; padding: 4px;">
+                <strong style="color: #FAFAFA; font-size: 13px;">#${loc.rank} ${loc.name}</strong>
+                <div style="color: ${levelColor}; font-weight: bold; font-size: 11px; margin-top: 2px;">
+                  Priority ${loc.priority.priority_score.toFixed(1)} (${loc.priority.priority_level})
+                </div>
+                <div style="color: #A1A1AA; font-size: 11px; margin-top: 2px;">
+                  XGBoost: ${loc.risk.risk_prediction.label} · Detections: ${loc.risk.detection_count}
+                </div>
+              </div>
+            `),
+          )
+          .addTo(map)
+
+        markersRef.current.push(marker)
+
+        // Render nearby entity markers if selected
+        if (isSelected && loc.impact.nearby_entities) {
+          loc.impact.nearby_entities.forEach((entity) => {
+            const entEl = document.createElement('div')
+            entEl.style.cssText = `
+              width: 10px;
+              height: 10px;
+              background: #a855f7;
+              border: 1.5px solid white;
+              border-radius: 50%;
+              box-shadow: 0 0 6px #a855f7;
+            `
+            const entMarker = new maplibregl.Marker({ element: entEl })
+              .setLngLat([entity.longitude, entity.latitude])
+              .setPopup(
+                new maplibregl.Popup({ offset: 8, closeButton: false }).setHTML(`
+                  <div style="font-size: 11px; font-family: Inter, sans-serif;">
+                    <strong style="color: #c084fc;">${entity.name}</strong> (${entity.type})
+                    <div style="color: #94a3b8;">${entity.distance_m.toFixed(0)}m from inspection</div>
+                  </div>
+                `),
+              )
+              .addTo(map)
+
+            markersRef.current.push(entMarker)
+          })
+        }
+      })
+
+      if (!bounds.isEmpty()) {
+        map.fitBounds(bounds, { padding: 60, maxZoom: 14 })
+      }
+      return
+    }
+
+    // Default GeoJSON rendering
     markersRef.current.forEach((m) => m.remove())
     markersRef.current = []
 
@@ -133,12 +245,6 @@ export function MapView({
         box-shadow: 0 0 8px ${color}66;
         transition: transform 0.2s;
       `
-      el.addEventListener('mouseenter', () => {
-        el.style.transform = 'scale(1.3)'
-      })
-      el.addEventListener('mouseleave', () => {
-        el.style.transform = 'scale(1)'
-      })
 
       const marker = new maplibregl.Marker({ element: el })
         .setLngLat(coords)
@@ -160,7 +266,7 @@ export function MapView({
 
       markersRef.current.push(marker)
     })
-  }, [filteredFeatures, onFeatureClick])
+  }, [geojson, filteredFeatures, inspectionLocations, selectedLocationId, onFeatureClick, onLocationSelect])
 
   useEffect(() => {
     const map = mapRef.current

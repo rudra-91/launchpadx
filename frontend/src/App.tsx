@@ -6,6 +6,7 @@ import { ProtectedRoute } from '@/components/layout/ProtectedRoute'
 import { LoginPage } from '@/pages/LoginPage'
 import { SignupPage } from '@/pages/SignupPage'
 import { DashboardPage } from '@/pages/DashboardPage'
+import { InspectionPage } from '@/pages/InspectionPage'
 import { AssetsPage } from '@/pages/AssetsPage'
 import { AssetDetailPage } from '@/pages/AssetDetailPage'
 import { NetworkPage } from '@/pages/NetworkPage'
@@ -40,29 +41,30 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <AuthInitializer>
         <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route
-            element={
-              <ProtectedRoute>
-                <DashboardLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/assets" element={<AssetsPage />} />
-            <Route path="/assets/:id" element={<AssetDetailPage />} />
-            <Route path="/network" element={<NetworkPage />} />
-            <Route path="/simulation" element={<SimulationPage />} />
-            <Route path="/optimizer" element={<OptimizerPage />} />
-            <Route path="/analytics" element={<AnalyticsPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-          </Route>
-          <Route path="*" element={<RootRedirect />} />
-        </Routes>
-      </BrowserRouter>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/inspections" element={<InspectionPage />} />
+              <Route path="/assets" element={<AssetsPage />} />
+              <Route path="/assets/:id" element={<AssetDetailPage />} />
+              <Route path="/network" element={<NetworkPage />} />
+              <Route path="/simulation" element={<SimulationPage />} />
+              <Route path="/optimizer" element={<OptimizerPage />} />
+              <Route path="/analytics" element={<AnalyticsPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+            </Route>
+            <Route path="*" element={<RootRedirect />} />
+          </Routes>
+        </BrowserRouter>
       </AuthInitializer>
     </QueryClientProvider>
   )

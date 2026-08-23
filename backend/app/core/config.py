@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     frontend_url: str = "http://localhost:5173"
     ml_provider: str = "mock"
     ml_model_path: str | None = None
+    yolo_service_url: str = "http://127.0.0.1:8001"
+    xgboost_model_path: str = r"C:\Users\Furquan sohel.LAPTOP-V2QEI4B3\Desktop\INFRA-X-RoadAI\models\xgboost_road_risk.joblib"
+
 
 
 @lru_cache

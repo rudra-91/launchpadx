@@ -133,7 +133,7 @@ export function SignupPage() {
 
           <p className="mt-6 text-center text-sm text-muted">
             Already have an account?{' '}
-            <Link to="/login" className="text-accent hover:underline">
+            <Link to="/signup" className="text-accent hover:underline">
               Sign in
             </Link>
           </p>
