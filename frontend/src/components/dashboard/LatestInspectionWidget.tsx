@@ -3,7 +3,6 @@ import { motion } from 'framer-motion'
 import {
   FileSearch,
   ArrowRight,
-  Sparkles,
   Building,
   Hospital,
   Flame,
@@ -42,7 +41,7 @@ export function LatestInspectionWidget() {
         return <Flame className="h-3.5 w-3.5 text-amber-400" />
       case 'police_station':
       case 'police':
-        return <Shield className="h-3.5 w-3.5 text-blue-400" />
+        return <Shield className="h-3.5 w-3.5 text-[color:var(--info)]" />
       case 'school':
         return <GraduationCap className="h-3.5 w-3.5 text-emerald-400" />
       default:
@@ -53,24 +52,23 @@ export function LatestInspectionWidget() {
   // EMPTY STATE when no live inspection analysis has been performed yet
   if (!topLocation || !topLocation.priority || !topLocation.risk || !topLocation.impact) {
     return (
-      <div className="glass-card flex flex-col items-center justify-between p-5 border border-accent/30 sm:flex-row shadow-lg">
+      <div className="glass-card flex flex-col items-center justify-between gap-4 border border-border p-5 sm:flex-row">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-accent/40 bg-accent/15 text-accent">
-            <Sparkles className="h-5 w-5" />
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-lg)] border border-border bg-elevated text-[color:var(--warm-grey)]">
+            <FileSearch className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-text-primary">
-              Latest AI Road Inspection
-            </h3>
-            <p className="text-xs text-text-secondary">
-              No live inspection yet — Run Road Inspection to detect YOLO damage, calculate XGBoost risk & GIS impact.
+            <h3 className="text-sm font-semibold text-text-primary">Latest AI Road Inspection</h3>
+            <p className="text-xs text-muted">
+              No live inspection yet — Run Road Inspection to detect YOLO damage, calculate XGBoost
+              risk & GIS impact.
             </p>
           </div>
         </div>
 
         <Link
           to="/inspections"
-          className="mt-4 sm:mt-0 flex shrink-0 items-center gap-1.5 rounded-xl bg-accent px-4 py-2 text-xs font-bold text-background shadow-lg shadow-accent/20 transition-opacity hover:opacity-90 cursor-pointer"
+          className="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[var(--radius-md)] bg-accent px-4 py-2 text-xs font-semibold text-[color:var(--accent-foreground)] transition-colors duration-[160ms] hover:bg-[color:var(--accent-hover)]"
         >
           <span>Run Road Inspection</span>
           <ArrowRight className="h-4 w-4" />
@@ -99,30 +97,32 @@ export function LatestInspectionWidget() {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="glass-card overflow-hidden p-5 border border-accent/40 shadow-xl space-y-4"
+      className="glass-card space-y-4 overflow-hidden border border-border p-5"
     >
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-amber-500/40 bg-amber-500/15 text-amber-400 font-bold text-xs">
+          <div className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-md)] border border-border bg-elevated text-xs font-semibold text-[color:var(--warm-grey)]">
             #{topLocation.rank ?? 1}
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-base font-bold text-text-primary">Latest AI Road Inspection</h3>
-              <span className="rounded bg-accent/20 px-2 py-0.5 text-[10px] font-extrabold text-accent uppercase tracking-wider">
-                REAL ANALYSIS RESULT
+              <h3 className="text-[15px] font-semibold text-text-primary">Latest AI Road Inspection</h3>
+              <span className="rounded-[var(--radius-sm)] bg-accent/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[color:var(--warm-grey)]">
+                Live result
               </span>
             </div>
-            <p className="text-xs text-text-secondary">
-              Location: <strong className="text-text-primary">{topLocation.name}</strong> · GPS: ({topLocation.latitude?.toFixed(4) ?? '0.0000'}, {topLocation.longitude?.toFixed(4) ?? '0.0000'})
+            <p className="text-xs text-muted">
+              Location: <strong className="text-text-secondary">{topLocation.name}</strong> · GPS: (
+              {topLocation.latitude?.toFixed(4) ?? '0.0000'},{' '}
+              {topLocation.longitude?.toFixed(4) ?? '0.0000'})
             </p>
           </div>
         </div>
 
         <Link
           to="/inspections"
-          className="flex items-center gap-1.5 rounded-xl border border-accent/40 bg-accent/10 px-3.5 py-1.5 text-xs font-semibold text-accent hover:bg-accent/20"
+          className="flex items-center gap-1.5 rounded-[var(--radius-md)] border border-border bg-elevated px-3.5 py-1.5 text-xs font-medium text-text-secondary transition-colors duration-[160ms] hover:text-text-primary"
         >
           <FileSearch className="h-4 w-4" />
           View Detailed Inspection
@@ -131,62 +131,42 @@ export function LatestInspectionWidget() {
 
       {/* Grid of Key AI Intelligence Indicators */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {/* Location & Risk Level */}
-        <div className="rounded-xl border border-border bg-surface/40 p-3">
-          <span className="text-[10px] font-semibold uppercase text-text-secondary tracking-wider">
-            Risk Level
-          </span>
-          <div className="mt-1 flex items-baseline justify-between">
-            <span className="text-xl font-extrabold text-text-primary">
-              {riskLevel}
-            </span>
-            <span className="rounded bg-accent/20 px-2 py-0.5 text-xs font-bold text-accent">
+        <div className="rounded-[var(--radius-lg)] border border-border bg-elevated/40 p-3.5">
+          <span className="kpi-label">Risk Level</span>
+          <div className="mt-1.5 flex items-baseline justify-between">
+            <span className="text-xl font-semibold text-text-primary">{riskLevel}</span>
+            <span className="rounded-[var(--radius-sm)] bg-background px-2 py-0.5 text-xs text-muted">
               {topLocation.name.split(' ')[0]}
             </span>
           </div>
         </div>
 
-        {/* Priority Level / Score */}
-        <div className="rounded-xl border border-accent/30 bg-accent/10 p-3">
-          <span className="text-[10px] font-semibold uppercase text-accent tracking-wider">
-            Priority Score & Level
-          </span>
-          <div className="mt-1 flex items-baseline justify-between">
-            <span className="text-xl font-extrabold text-text-primary">
-              {score.toFixed(1)}
-            </span>
-            <span className="rounded bg-accent/30 px-2 py-0.5 text-xs font-extrabold text-accent">
+        <div className="rounded-[var(--radius-lg)] border border-border bg-elevated/40 p-3.5">
+          <span className="kpi-label">Priority Score</span>
+          <div className="mt-1.5 flex items-baseline justify-between">
+            <span className="text-xl font-semibold text-text-primary">{score.toFixed(1)}</span>
+            <span className="rounded-[var(--radius-sm)] bg-accent/20 px-2 py-0.5 text-xs font-semibold text-[color:var(--warm-grey)]">
               {level}
             </span>
           </div>
         </div>
 
-        {/* XGBoost Prediction */}
-        <div className="rounded-xl border border-purple-500/30 bg-purple-500/10 p-3">
-          <span className="text-[10px] font-semibold uppercase text-purple-400 tracking-wider">
-            XGBoost Model Prediction
-          </span>
-          <div className="mt-1 flex items-baseline justify-between">
-            <span className="text-xl font-extrabold text-text-primary">
-              Class {riskPredClass}
-            </span>
-            <span className="rounded bg-purple-500/20 px-2 py-0.5 text-xs font-bold text-purple-300">
+        <div className="rounded-[var(--radius-lg)] border border-border bg-elevated/40 p-3.5">
+          <span className="kpi-label">XGBoost Prediction</span>
+          <div className="mt-1.5 flex items-baseline justify-between">
+            <span className="text-xl font-semibold text-text-primary">Class {riskPredClass}</span>
+            <span className="rounded-[var(--radius-sm)] bg-background px-2 py-0.5 text-xs font-semibold text-text-secondary">
               {riskPredLabel}
             </span>
           </div>
         </div>
 
-        {/* Damage Counts */}
-        <div className="rounded-xl border border-warning/30 bg-warning/10 p-3">
-          <span className="text-[10px] font-semibold uppercase text-warning tracking-wider">
-            YOLO Damage Summary
-          </span>
-          <div className="mt-1 flex items-baseline justify-between">
-            <span className="text-xl font-extrabold text-warning">
-              {detectionCount} Items
-            </span>
-            <span className="text-[11px] font-semibold text-text-secondary">
-              Potholes: {potholeCount} | Cracks: {d00Count + d20Count}
+        <div className="rounded-[var(--radius-lg)] border border-border bg-elevated/40 p-3.5">
+          <span className="kpi-label">YOLO Damage</span>
+          <div className="mt-1.5 flex items-baseline justify-between gap-2">
+            <span className="text-xl font-semibold text-text-primary">{detectionCount}</span>
+            <span className="text-[11px] text-muted">
+              Potholes: {potholeCount} · Cracks: {d00Count + d20Count}
             </span>
           </div>
         </div>

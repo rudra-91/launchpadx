@@ -34,13 +34,13 @@ const NODE_ICONS: Record<NetworkNodeType, typeof Building2> = {
 }
 
 const NODE_COLORS: Record<NetworkNodeType, string> = {
-  bridge: '#60A5FA',
-  road: '#38BDF8',
-  hospital: '#22C55E',
-  fire_station: '#F59E0B',
-  police_station: '#818CF8',
-  school: '#34D399',
-  infrastructure: '#A78BFA',
+  bridge: '#C8C8C8',
+  road: '#E2E2E2',
+  hospital: '#A0A0A0',
+  fire_station: '#8A8A8A',
+  police_station: '#777777',
+  school: '#A0A0A0',
+  infrastructure: '#666666',
 }
 
 const MIN_ZOOM = 0.35
@@ -204,13 +204,13 @@ export function NetworkGraph({
     <GlassCard padding="none" className="relative overflow-hidden">
       <div className="flex items-center justify-between gap-2 border-b border-border/60 px-3 py-2">
         <div className="flex items-center gap-2 text-xs text-text-secondary">
-          <Move className="h-3.5 w-3.5 text-accent" />
+          <Move className="h-3.5 w-3.5 text-[color:var(--infra-icon)]" />
           <span>Drag / swipe to pan · scroll to zoom</span>
         </div>
         <div className="flex items-center gap-1">
           <button
             type="button"
-            className="rounded-lg p-1.5 text-text-secondary hover:bg-white/5 hover:text-text-primary"
+            className="rounded-lg p-1.5 text-[color:var(--infra-secondary)] hover:bg-[color:var(--infra-hover)] hover:text-[color:var(--infra-bright)]"
             onClick={() => setZoom((z) => Math.min(MAX_ZOOM, z * 1.15))}
             aria-label="Zoom in"
           >
@@ -218,7 +218,7 @@ export function NetworkGraph({
           </button>
           <button
             type="button"
-            className="rounded-lg p-1.5 text-text-secondary hover:bg-white/5 hover:text-text-primary"
+            className="rounded-lg p-1.5 text-[color:var(--infra-secondary)] hover:bg-[color:var(--infra-hover)] hover:text-[color:var(--infra-bright)]"
             onClick={() => setZoom((z) => Math.max(MIN_ZOOM, z / 1.15))}
             aria-label="Zoom out"
           >
@@ -226,7 +226,7 @@ export function NetworkGraph({
           </button>
           <button
             type="button"
-            className="rounded-lg p-1.5 text-text-secondary hover:bg-white/5 hover:text-text-primary"
+            className="rounded-lg p-1.5 text-[color:var(--infra-secondary)] hover:bg-[color:var(--infra-hover)] hover:text-[color:var(--infra-bright)]"
             onClick={resetView}
             aria-label="Reset view"
           >
@@ -277,7 +277,7 @@ export function NetworkGraph({
                   y1={source.y}
                   x2={target.x}
                   y2={target.y}
-                  stroke={edgeSelected ? '#60A5FA' : 'rgba(255,255,255,0.14)'}
+                  stroke={edgeSelected ? '#C8C8C8' : 'rgba(255,255,255,0.12)'}
                   strokeWidth={edgeSelected ? 2.25 : 1.25}
                   strokeDasharray="5 4"
                 />
@@ -286,7 +286,7 @@ export function NetworkGraph({
                     x={(source.x + target.x) / 2}
                     y={(source.y + target.y) / 2 - 6}
                     textAnchor="middle"
-                    fill="#94A3B8"
+                    fill="#8A8A8A"
                     fontSize="10"
                     className="pointer-events-none"
                   >
@@ -333,7 +333,7 @@ function NetworkNodeElement({
   onHover: (hover: boolean) => void
 }) {
   const Icon = NODE_ICONS[node.type] ?? Building
-  const color = NODE_COLORS[node.type] ?? '#A78BFA'
+  const color = NODE_COLORS[node.type] ?? '#8A8A8A'
   const x = node.x ?? 0
   const y = node.y ?? 0
   const radius = node.type === 'road' ? 30 : 20
@@ -341,12 +341,12 @@ function NetworkNodeElement({
 
   const riskColor =
     node.riskScore >= 80
-      ? '#EF4444'
+      ? '#A85A4C'
       : node.riskScore >= 60
-        ? '#F97316'
+        ? '#A87A48'
         : node.riskScore >= 30
-          ? '#F59E0B'
-          : '#22C55E'
+          ? '#A8904E'
+          : '#5F7A63'
 
   const strokeColor =
     node.type === 'road' ? riskColor : isSelected || isAffected ? color : `${color}90`
@@ -394,7 +394,7 @@ function NetworkNodeElement({
         x={x}
         y={y + radius + 19}
         textAnchor="middle"
-        fill="#FAFAFA"
+        fill="#E2E2E2"
         fontSize="10"
         fontWeight="600"
       >
@@ -406,7 +406,7 @@ function NetworkNodeElement({
         </text>
       )}
       {node.distance_m !== undefined && node.type !== 'road' && (
-        <text x={x} y={y + radius + 32} textAnchor="middle" fill="#94A3B8" fontSize="9">
+        <text x={x} y={y + radius + 32} textAnchor="middle" fill="#8A8A8A" fontSize="9">
           {Math.round(node.distance_m)}m
         </text>
       )}
@@ -452,7 +452,7 @@ export function CascadePanel({
           {cascade.affectedRoads.map((road) => (
             <span
               key={road}
-              className="rounded-lg border border-accent/30 bg-accent/12 px-2 py-1 font-mono text-xs text-accent"
+              className="rounded-lg border border-border bg-[color:var(--infra-elevated)] px-2 py-1 font-mono text-xs text-[color:var(--infra-text)]"
             >
               {road}
             </span>
@@ -522,13 +522,13 @@ export function NetworkLegend() {
       <h3 className="mb-3 text-sm font-semibold text-text-primary">Legend</h3>
       <div className="space-y-2 text-xs text-text-secondary">
         <div className="flex items-center gap-2">
-          <span className="h-3 w-3 rounded-full bg-sky-400" /> Road inspection location
+          <span className="h-3 w-3 rounded-full bg-[color:var(--taupe)]" /> Road inspection location
         </div>
         <div className="flex items-center gap-2">
           <span className="h-3 w-3 rounded-full bg-success" /> Hospital
         </div>
         <div className="flex items-center gap-2">
-          <span className="h-3 w-3 rounded-full bg-amber-400" /> Fire / Police / School
+          <span className="h-3 w-3 rounded-full bg-[color:var(--warm-grey)]" /> Fire / Police / School
         </div>
         <div className="mt-3 space-y-1 border-t border-border pt-3">
           <p>Each road is a separate cluster — swipe/drag to explore</p>

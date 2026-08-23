@@ -2,6 +2,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { Navbar } from '@/components/layout/Navbar'
+import { Hero } from '@/components/ui/tailwind-css-background-snippet'
 import { useScrollReveal } from '@/hooks/useScrollReveal'
 
 const pageMeta: Record<string, { title: string; subtitle?: string }> = {
@@ -30,7 +31,7 @@ const pageMeta: Record<string, { title: string; subtitle?: string }> = {
     subtitle: 'What-if repair outcomes for inspected roads',
   },
   '/optimizer': {
-    title: 'Maintenance',
+    title: 'Optimizer',
     subtitle: 'Budget-aware prioritization from live inspection scores',
   },
   '/analytics': {
@@ -51,12 +52,17 @@ export function DashboardLayout() {
   const meta = pageMeta[basePath] ?? { title: 'INFRA-X' }
 
   return (
-    <div className="relative flex h-screen overflow-hidden bg-background">
+    <div className="ix-app dark relative flex h-screen overflow-hidden bg-transparent">
+      {/* Radial background — authenticated app only */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        <Hero className="h-full min-h-screen" />
+      </div>
+
       <div className="relative z-10 flex min-w-0 flex-1">
         <Sidebar />
-        <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex min-w-0 flex-1 flex-col bg-transparent">
           <Navbar title={meta.title} subtitle={meta.subtitle} />
-          <main className="flex-1 overflow-y-auto px-7 py-6 xl:px-9 xl:py-7">
+          <main className="flex-1 overflow-y-auto px-6 py-5 xl:px-8 xl:py-6">
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}

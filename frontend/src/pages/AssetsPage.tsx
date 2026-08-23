@@ -125,7 +125,7 @@ function InspectionAssetTable({
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-border text-left text-xs text-text-secondary">
+            <tr className="border-b border-border bg-[color:var(--infra-elevated)] text-left text-xs text-[color:var(--infra-secondary)]">
               <th className="px-4 py-3 font-medium">Rank</th>
               <th className="px-4 py-3 font-medium">Location</th>
               <th className="px-4 py-3 font-medium">Road</th>
@@ -144,9 +144,9 @@ function InspectionAssetTable({
               return (
                 <tr
                   key={loc.location_id}
-                  className="border-b border-border/50 transition-colors hover:bg-white/[0.02]"
+                  className="border-b border-border transition-colors hover:bg-[color:var(--infra-elevated)]"
                 >
-                  <td className="px-4 py-3 font-mono text-accent">#{loc.rank}</td>
+                  <td className="px-4 py-3 font-mono text-[color:var(--infra-text)]">#{loc.rank}</td>
                   <td className="px-4 py-3">
                     <p className="font-medium text-text-primary">{loc.name}</p>
                     <p className="font-mono text-xs text-text-secondary">{loc.location_id}</p>

@@ -55,7 +55,7 @@ export function InspectionDetailPanel({
         return <Flame className="h-4 w-4 text-amber-400" />
       case 'police_station':
       case 'police':
-        return <Shield className="h-4 w-4 text-blue-400" />
+        return <Shield className="h-4 w-4 text-[color:var(--info)]" />
       case 'school':
         return <GraduationCap className="h-4 w-4 text-emerald-400" />
       default:
@@ -116,7 +116,7 @@ export function InspectionDetailPanel({
             <SummaryItem
               label="XGBoost Label"
               value={location.risk.risk_prediction.label}
-              valueClass="text-[#A855F7]"
+              valueClass="text-[color:var(--warm-grey)]"
             />
           </div>
         </section>

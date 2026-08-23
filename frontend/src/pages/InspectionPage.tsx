@@ -161,7 +161,7 @@ export function InspectionPage() {
             onClick={handleAnalyze}
             className={`inline-flex h-10 items-center gap-2 rounded-[10px] px-5 text-[13px] font-semibold transition-opacity duration-150 ${
               isValidToAnalyze
-                ? 'bg-accent text-background hover:opacity-90'
+                ? 'bg-accent text-[color:var(--accent-foreground)] hover:bg-[color:var(--accent-hover)]'
                 : 'cursor-not-allowed border border-border bg-elevated/50 text-muted'
             }`}
           >
@@ -237,7 +237,7 @@ export function InspectionPage() {
               <button
                 type="button"
                 onClick={handleOpenAddModal}
-                className="mt-7 inline-flex h-10 items-center gap-2 rounded-[10px] bg-accent px-5 text-[13px] font-semibold text-background transition-opacity duration-150 hover:opacity-90"
+                className="mt-7 inline-flex h-10 items-center gap-2 rounded-[var(--radius-md)] bg-accent px-5 text-[13px] font-semibold text-[color:var(--accent-foreground)] transition-colors duration-150 hover:bg-[color:var(--accent-hover)]"
               >
                 <Plus className="h-4 w-4" />
                 Add Location
@@ -331,38 +331,36 @@ export function InspectionPage() {
             />
           </div>
 
-          {/* Primary workspace: list + map | details */}
-          <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_360px] 2xl:grid-cols-[minmax(0,1fr)_380px]">
-            <div className="min-w-0 space-y-6">
-              <RankedLeaderboard
-                locations={results.locations}
-                selectedLocationId={selectedLocationId}
-                onSelectLocation={(id) => setSelectedLocation(id)}
-              />
+          {/* Primary workspace: stacked rows — list → map → details */}
+          <div className="flex min-w-0 flex-col gap-6">
+            <RankedLeaderboard
+              locations={results.locations}
+              selectedLocationId={selectedLocationId}
+              onSelectLocation={(id) => setSelectedLocation(id)}
+            />
 
-              <section className="overflow-hidden rounded-2xl border border-border bg-surface">
-                <div className="flex items-center justify-between border-b border-border px-5 py-4">
-                  <div>
-                    <h2 className="text-[17px] font-semibold text-text-primary">
-                      Spatial Intelligence
-                    </h2>
-                    <p className="mt-0.5 text-[13px] text-muted">
-                      Inspection coordinates and nearby infrastructure markers
-                    </p>
-                  </div>
+            <section className="overflow-hidden rounded-2xl border border-border bg-surface">
+              <div className="flex items-center justify-between border-b border-border px-5 py-4">
+                <div>
+                  <h2 className="text-[17px] font-semibold text-text-primary">
+                    Spatial Intelligence
+                  </h2>
+                  <p className="mt-0.5 text-[13px] text-muted">
+                    Inspection coordinates and nearby infrastructure markers
+                  </p>
                 </div>
-                <div className="p-3">
-                  <MapView
-                    inspectionLocations={results.locations}
-                    selectedLocationId={selectedLocationId}
-                    className="h-[480px] min-h-[480px] rounded-xl xl:h-[520px]"
-                    onLocationSelect={(id) => setSelectedLocation(id)}
-                  />
-                </div>
-              </section>
-            </div>
+              </div>
+              <div className="p-3">
+                <MapView
+                  inspectionLocations={results.locations}
+                  selectedLocationId={selectedLocationId}
+                  className="h-[480px] min-h-[480px] rounded-xl xl:h-[520px]"
+                  onLocationSelect={(id) => setSelectedLocation(id)}
+                />
+              </div>
+            </section>
 
-            <div className="min-w-0 xl:sticky xl:top-0 xl:self-start xl:max-h-[calc(100vh-7.5rem)]">
+            <div className="min-w-0">
               <InspectionDetailPanel
                 location={selectedResultLocation}
                 previewUrls={selectedLocationPreviews}

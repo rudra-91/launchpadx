@@ -13,22 +13,22 @@ export function Input({ label, error, icon, className, id, ...props }: InputProp
   return (
     <div className="space-y-2">
       {label && (
-        <label htmlFor={inputId} className="block text-sm font-medium text-text-secondary">
+        <label htmlFor={inputId} className="block text-[13px] font-medium text-text-secondary">
           {label}
         </label>
       )}
       <div className="relative">
         {icon && (
-          <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary">
+          <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted">
             {icon}
           </div>
         )}
         <input
           id={inputId}
           className={cn(
-            'w-full rounded-xl border border-border bg-elevated px-4 py-2 text-sm text-text-primary',
-            'placeholder:text-muted transition-colors duration-200',
-            'focus:border-border-strong focus:outline-none focus:ring-2 focus:ring-accent/20',
+            'w-full rounded-[var(--radius-md)] border border-border bg-[color:var(--infra-bg-secondary,var(--elevated))] px-3.5 py-2.5 text-sm text-text-primary',
+            'placeholder:text-muted transition-colors duration-[160ms] ease-out',
+            'hover:border-border-strong focus:border-[color:var(--infra-muted,var(--accent))] focus:outline-none focus:ring-0',
             icon && 'pl-10',
             error && 'border-critical/50',
             className,

@@ -25,26 +25,26 @@ export function TrendChart({ data }: TrendChartProps) {
           <YAxis domain={[40, 80]} tickLine={false} axisLine={false} />
           <Tooltip
             contentStyle={{
-              background: '#121212',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: 16,
+              background: 'var(--surface-elevated)',
+              border: '1px solid var(--border)',
+              borderRadius: 10,
             }}
           />
           <Area
             type="monotone"
             dataKey="condition"
-            stroke="#60A5FA"
-            fill="#60A5FA"
-            fillOpacity={0.08}
-            strokeWidth={2}
+            stroke="#E2E2E2"
+            fill="#E2E2E2"
+            fillOpacity={0.06}
+            strokeWidth={1.5}
             name="Current"
           />
           <Area
             type="monotone"
             dataKey="predicted"
-            stroke="#A1A1AA"
+            stroke="#666666"
             fill="none"
-            strokeWidth={2}
+            strokeWidth={1.5}
             strokeDasharray="4 4"
             name="Predicted"
           />

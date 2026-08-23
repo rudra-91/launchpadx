@@ -25,26 +25,26 @@ export function DegradationChart({ data }: DegradationChartProps) {
           <YAxis domain={[0, 100]} tickLine={false} axisLine={false} />
           <Tooltip
             contentStyle={{
-              background: '#121212',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: 16,
+              background: '#171717',
+              border: '1px solid #333333',
+              borderRadius: 8,
             }}
           />
           <Area
             type="monotone"
             dataKey="condition"
-            stroke="#60A5FA"
-            fill="#60A5FA"
-            fillOpacity={0.08}
-            strokeWidth={2}
+            stroke="#E2E2E2"
+            fill="#E2E2E2"
+            fillOpacity={0.05}
+            strokeWidth={1.5}
             name="Historical"
           />
           <Area
             type="monotone"
             dataKey="predicted"
-            stroke="#F97316"
+            stroke="#A87A48"
             fill="none"
-            strokeWidth={2}
+            strokeWidth={1.5}
             strokeDasharray="5 5"
             name="Predicted"
           />

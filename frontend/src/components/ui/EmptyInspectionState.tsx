@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, Sparkles } from 'lucide-react'
+import { ArrowRight, FileSearch } from 'lucide-react'
 import { GlassCard } from '@/components/ui/GlassCard'
 
 interface EmptyInspectionStateProps {
@@ -14,18 +14,18 @@ export function EmptyInspectionState({
   return (
     <GlassCard
       padding="lg"
-      className="mx-auto flex max-w-xl flex-col items-center space-y-4 border border-accent/30 p-8 text-center shadow-xl"
+      className="mx-auto flex max-w-lg flex-col items-center space-y-5 p-10 text-center"
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-accent/40 bg-accent/15 text-accent">
-        <Sparkles className="h-6 w-6" />
+      <div className="flex h-12 w-12 items-center justify-center rounded-[var(--radius-lg)] border border-border bg-elevated text-accent-glow">
+        <FileSearch className="h-5 w-5" strokeWidth={1.75} />
       </div>
       <div>
-        <h3 className="text-base font-bold text-text-primary">{title}</h3>
-        <p className="mt-1 text-xs leading-relaxed text-text-secondary">{description}</p>
+        <h3 className="text-[16px] font-semibold text-text-primary">{title}</h3>
+        <p className="mt-2 text-[13px] leading-relaxed text-muted">{description}</p>
       </div>
       <Link
         to="/inspections"
-        className="flex cursor-pointer items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-xs font-bold text-background shadow-lg shadow-accent/20 transition-opacity hover:opacity-90"
+        className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-accent px-5 py-2.5 text-[13px] font-semibold text-[color:var(--accent-foreground)] transition-colors duration-[160ms] ease-out hover:bg-[color:var(--accent-hover)]"
       >
         <span>Run Road Inspection</span>
         <ArrowRight className="h-4 w-4" />

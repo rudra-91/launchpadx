@@ -27,7 +27,7 @@ export function MapFilters() {
     <GlassCard padding="md" className="h-fit">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Filter className="h-4 w-4 text-accent" />
+          <Filter className="h-4 w-4 text-[color:var(--infra-icon)]" />
           <h3 className="text-sm font-medium text-text-primary">Map Filters</h3>
         </div>
         <Button variant="ghost" size="sm" icon={<RotateCcw className="h-3.5 w-3.5" />} onClick={resetFilters}>
@@ -51,7 +51,7 @@ export function MapFilters() {
                   type="checkbox"
                   checked={item.checked}
                   onChange={(e) => item.onChange(e.target.checked)}
-                  className="h-4 w-4 rounded border-border bg-surface accent-accent"
+                  className="h-4 w-4 rounded border-border bg-surface"
                 />
                 {item.label}
               </label>
@@ -73,7 +73,7 @@ export function MapFilters() {
                   'rounded-lg border px-2.5 py-1 text-xs font-medium transition-all',
                   getRiskBgClass(level),
                   riskLevels.includes(level)
-                    ? 'ring-2 ring-accent/40'
+                    ? 'outline outline-1 outline-[color:var(--infra-muted)]'
                     : 'opacity-50 hover:opacity-80',
                 )}
               >
@@ -94,7 +94,7 @@ export function MapFilters() {
               max={100}
               value={conditionMin}
               onChange={(e) => setConditionRange(Number(e.target.value), conditionMax)}
-              className="w-full accent-accent"
+              className="w-full"
             />
             <input
               type="range"
@@ -102,7 +102,7 @@ export function MapFilters() {
               max={100}
               value={conditionMax}
               onChange={(e) => setConditionRange(conditionMin, Number(e.target.value))}
-              className="w-full accent-accent"
+              className="w-full"
             />
             <div className="flex justify-between text-xs text-text-secondary">
               <span>Min: {conditionMin}</span>

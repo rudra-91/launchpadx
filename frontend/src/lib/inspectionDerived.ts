@@ -96,10 +96,10 @@ export function deriveInspectionMetrics(
   }))
 
   const damageCategoryCounts: CategoryPoint[] = [
-    { category: 'Longitudinal (D00)', count: damageTotals.D00, fill: '#60A5FA' },
-    { category: 'Transverse (D10)', count: damageTotals.D10, fill: '#38BDF8' },
-    { category: 'Alligator (D20)', count: damageTotals.D20, fill: '#F97316' },
-    { category: 'Pothole (D40)', count: damageTotals.D40, fill: '#EF4444' },
+    { category: 'Longitudinal (D00)', count: damageTotals.D00, fill: '#E2E2E2' },
+    { category: 'Transverse (D10)', count: damageTotals.D10, fill: '#A0A0A0' },
+    { category: 'Alligator (D20)', count: damageTotals.D20, fill: '#666666' },
+    { category: 'Pothole (D40)', count: damageTotals.D40, fill: '#A85A4C' },
   ]
 
   const top = locations[0]

@@ -19,7 +19,7 @@ export function Select({ label, options, error, className, id, ...props }: Selec
   return (
     <div className="space-y-1.5">
       {label && (
-        <label htmlFor={selectId} className="block text-sm font-medium text-text-secondary">
+        <label htmlFor={selectId} className="block text-[13px] font-medium text-text-secondary">
           {label}
         </label>
       )}
@@ -27,9 +27,9 @@ export function Select({ label, options, error, className, id, ...props }: Selec
         <select
           id={selectId}
           className={cn(
-            'w-full appearance-none rounded-xl border border-border bg-surface/80 px-4 py-2.5 pr-10 text-sm text-text-primary',
-            'transition-colors duration-200',
-            'focus:border-accent/40 focus:outline-none focus:ring-2 focus:ring-accent/20',
+            'w-full appearance-none rounded-[var(--radius-md)] border border-border bg-[color:var(--infra-bg-secondary,var(--elevated))] px-3.5 py-2.5 pr-10 text-sm text-text-primary',
+            'transition-colors duration-[160ms] ease-out',
+            'hover:border-border-strong focus:border-[color:var(--infra-muted,var(--accent))] focus:outline-none focus:ring-0',
             error && 'border-critical/50',
             className,
           )}
@@ -41,7 +41,7 @@ export function Select({ label, options, error, className, id, ...props }: Selec
             </option>
           ))}
         </select>
-        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-secondary" />
+        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
       </div>
       {error && <p className="text-xs text-critical">{error}</p>}
     </div>

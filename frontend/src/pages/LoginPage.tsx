@@ -5,6 +5,7 @@ import { Mail, Lock, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { GlassCard } from '@/components/ui/GlassCard'
+import { AetherFlowHero } from '@/components/ui/aether-flow-hero'
 import { useAuthStore } from '@/store/useAuthStore'
 import { getSupabaseConfigError } from '@/lib/supabase'
 
@@ -50,7 +51,10 @@ export function LoginPage() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="relative flex min-h-screen items-center justify-center px-4">
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        <AetherFlowHero backgroundOnly />
+      </div>
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}

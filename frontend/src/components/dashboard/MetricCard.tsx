@@ -6,16 +6,17 @@ interface MetricCardProps {
   title: string
   value: string | number
   icon: LucideIcon
+  /** Kept for API compat; icons stay monochrome except muted risk tones */
   accent?: 'blue' | 'critical' | 'warning' | 'cyan' | 'success'
   subtitle?: string
   trend?: { value: number; label: string }
 }
 
 const iconTone = {
-  blue: 'text-accent',
+  blue: 'text-[color:var(--infra-icon,#777)]',
+  cyan: 'text-[color:var(--infra-icon,#777)]',
   critical: 'text-critical',
   warning: 'text-warning',
-  cyan: 'text-accent-glow',
   success: 'text-success',
 }
 
@@ -30,12 +31,16 @@ export function MetricCard({
   const isPositiveTrend = trend && trend.value > 0
 
   return (
-    <div className="rounded-2xl border border-border bg-surface p-5 transition-colors duration-150 hover:border-border-strong">
+    <div className="rounded-lg border border-border bg-surface p-5 transition-colors duration-[160ms] ease-out hover:border-border-strong hover:bg-elevated">
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 space-y-3">
+        <div className="min-w-0 space-y-2.5">
           <p className="kpi-label">{title}</p>
-          <p className="text-[30px] font-semibold tracking-tight text-text-primary">{value}</p>
-          {subtitle && <p className="text-[13px] text-muted">{subtitle}</p>}
+          <p className="text-[28px] font-semibold tracking-tight text-[color:var(--infra-bright,#E2E2E2)]">
+            {value}
+          </p>
+          {subtitle && (
+            <p className="text-[12px] text-[color:var(--infra-muted,#666)]">{subtitle}</p>
+          )}
           {trend && (
             <div className="flex items-center gap-1.5 text-[12px]">
               {isPositiveTrend ? (
@@ -46,17 +51,17 @@ export function MetricCard({
               <span className={isPositiveTrend ? 'text-success' : 'text-critical'}>
                 {Math.abs(trend.value)}%
               </span>
-              <span className="text-muted">{trend.label}</span>
+              <span className="text-[color:var(--infra-muted,#666)]">{trend.label}</span>
             </div>
           )}
         </div>
         <div
           className={cn(
-            'flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-elevated',
+            'flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border bg-elevated',
             iconTone[accent],
           )}
         >
-          <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
+          <Icon className="h-4 w-4" strokeWidth={1.6} />
         </div>
       </div>
     </div>

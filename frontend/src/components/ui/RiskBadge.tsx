@@ -12,16 +12,14 @@ export function RiskBadge({ level, score, size = 'md', className }: RiskBadgePro
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-lg border font-medium',
+        'inline-flex items-center rounded-[var(--radius-sm)] font-medium tracking-wide',
         getRiskBgClass(level),
-        size === 'sm' ? 'px-2 py-0.5 text-xs' : 'px-2.5 py-1 text-xs',
+        size === 'sm' ? 'px-2 py-0.5 text-[11px]' : 'px-2.5 py-1 text-xs',
         className,
       )}
     >
       {getRiskLabel(level)}
-      {score !== undefined && (
-        <span className="ml-1 opacity-70">({score})</span>
-      )}
+      {score !== undefined && <span className="ml-1 opacity-70">({score})</span>}
     </span>
   )
 }

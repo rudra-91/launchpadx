@@ -80,10 +80,10 @@ export function MapSearch({
               onClick={() => handleSelect(result)}
               className={cn(
                 'flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors hover:bg-white/5',
-                selectedId === result.id && 'bg-accent/10',
+                selectedId === result.id && 'bg-[color:var(--infra-elevated)]',
               )}
             >
-              <MapPin className="h-4 w-4 shrink-0 text-accent" />
+              <MapPin className="h-4 w-4 shrink-0 text-[color:var(--infra-icon)]" />
               <div className="min-w-0 flex-1">
                 <p className="truncate font-medium text-text-primary">{result.name}</p>
                 <p className="text-xs capitalize text-text-secondary">{result.type}</p>

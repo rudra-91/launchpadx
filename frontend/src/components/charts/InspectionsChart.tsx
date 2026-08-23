@@ -26,16 +26,20 @@ export function InspectionsChart({ data }: InspectionsChartProps) {
           <YAxis tickLine={false} axisLine={false} />
           <Tooltip
             contentStyle={{
-              background: 'rgba(18,18,18,0.95)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: 12,
+              background: 'var(--surface-elevated)',
+              border: '1px solid var(--border)',
+              borderRadius: 10,
             }}
           />
-          <Legend
-            wrapperStyle={{ fontSize: 11, color: '#A1A1AA' }}
+          <Legend wrapperStyle={{ fontSize: 11, color: 'var(--text-muted)' }} />
+          <Bar dataKey="completed" fill="#C8C8C8" radius={[2, 2, 0, 0]} name="Completed" />
+          <Bar
+            dataKey="scheduled"
+            fill="#666666"
+            radius={[2, 2, 0, 0]}
+            fillOpacity={0.9}
+            name="Scheduled"
           />
-          <Bar dataKey="completed" fill="#60A5FA" radius={[4, 4, 0, 0]} name="Completed" />
-          <Bar dataKey="scheduled" fill="#71717A" radius={[4, 4, 0, 0]} fillOpacity={0.7} name="Scheduled" />
         </BarChart>
       </ResponsiveContainer>
     </GlassCard>

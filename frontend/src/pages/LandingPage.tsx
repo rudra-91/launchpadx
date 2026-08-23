@@ -44,7 +44,7 @@ export function LandingPage() {
         onCtaClick={() => navigate('/login')}
       />
 
-      <section className="border-t border-white/10 bg-background px-6 py-16 md:px-10">
+      <section className="border-t border-white/10 bg-black px-6 py-16 md:px-10">
         <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
           {FEATURE_IMAGES.map((feature) => (
             <article

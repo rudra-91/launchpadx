@@ -27,9 +27,9 @@ export function RiskDistributionChart({ data }: RiskDistributionChartProps) {
           <YAxis tickLine={false} axisLine={false} />
           <Tooltip
             contentStyle={{
-              background: 'rgba(18,18,18,0.95)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: 12,
+              background: 'var(--surface-elevated)',
+              border: '1px solid var(--border)',
+              borderRadius: 10,
             }}
           />
           <Bar dataKey="count" radius={[6, 6, 0, 0]}>

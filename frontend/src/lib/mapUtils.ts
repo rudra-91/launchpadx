@@ -45,10 +45,10 @@ export function searchMapFeatures(
 
 export function getMarkerColor(riskLevel: RiskLevel): string {
   const colors: Record<RiskLevel, string> = {
-    low: '#22C55E',
-    medium: '#EAB308',
-    high: '#F97316',
-    critical: '#EF4444',
+    low: '#5F7A63',
+    medium: '#A8904E',
+    high: '#A87A48',
+    critical: '#A85A4C',
   }
   return colors[riskLevel]
 }

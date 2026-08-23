@@ -39,22 +39,25 @@ export function getRiskLabel(level: RiskLevel): string {
   return labels[level]
 }
 
+/** Semantic risk colors — muted, small visual area only */
 export function getRiskColor(level: RiskLevel): string {
   const colors: Record<RiskLevel, string> = {
-    low: '#22C55E',
-    medium: '#EAB308',
-    high: '#F97316',
-    critical: '#EF4444',
+    low: '#5F7A63',
+    medium: '#A8904E',
+    high: '#A87A48',
+    critical: '#A85A4C',
   }
   return colors[level]
 }
 
 export function getRiskBgClass(level: RiskLevel): string {
   const classes: Record<RiskLevel, string> = {
-    low: 'bg-success/12 text-success border border-success/30',
-    medium: 'bg-warning/12 text-warning border border-warning/30',
-    high: 'bg-orange-500/12 text-orange-400 border border-orange-500/30',
-    critical: 'bg-critical/12 text-critical border border-critical/30',
+    low: 'bg-[color:var(--risk-low)]/12 text-[color:var(--risk-low)] border border-[color:var(--risk-low)]/25',
+    medium:
+      'bg-[color:var(--risk-medium)]/12 text-[color:var(--risk-medium)] border border-[color:var(--risk-medium)]/25',
+    high: 'bg-[color:var(--risk-high)]/12 text-[color:var(--risk-high)] border border-[color:var(--risk-high)]/25',
+    critical:
+      'bg-[color:var(--risk-critical)]/12 text-[color:var(--risk-critical)] border border-[color:var(--risk-critical)]/25',
   }
   return classes[level]
 }
@@ -70,3 +73,13 @@ export function delay(ms: number): Promise<void> {
 export function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max)
 }
+
+/** Chart palette — graphite / taupe / warm grey (no rainbow) */
+export const CHART_PALETTE = {
+  primary: '#795238',
+  secondary: '#AEA7A3',
+  tertiary: '#525254',
+  quaternary: '#363636',
+  grid: 'rgba(255,255,255,0.05)',
+  axis: '#85817D',
+} as const

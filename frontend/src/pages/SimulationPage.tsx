@@ -87,10 +87,10 @@ export function SimulationPage() {
       </div>
 
       {selectedLocation && (
-        <GlassCard padding="md" className="border border-accent/40 bg-accent/5">
+        <GlassCard padding="md" className="border border-border bg-elevated/20">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-accent/40 bg-accent/20 text-xs font-bold text-accent">
+              <div className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-md)] border border-border bg-elevated text-xs font-bold text-[color:var(--warm-grey)]">
                 #{selectedLocation.rank}
               </div>
               <div>

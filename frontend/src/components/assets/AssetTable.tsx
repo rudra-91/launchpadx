@@ -43,7 +43,7 @@ export function AssetTable({ assets, onRowClick }: AssetTableProps) {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-border text-left text-xs text-text-secondary">
+            <tr className="border-b border-border bg-[color:var(--infra-elevated)] text-left text-xs text-[color:var(--infra-secondary)]">
               <th className="px-6 py-3 font-medium">Bridge ID</th>
               <th className="px-6 py-3 font-medium">Name</th>
               <th className="px-6 py-3 font-medium">Condition</th>
@@ -57,9 +57,9 @@ export function AssetTable({ assets, onRowClick }: AssetTableProps) {
             {sorted.map((asset) => (
               <tr
                 key={asset.id}
-                className="border-b border-border/50 transition-colors hover:bg-white/[0.02]"
+                className="border-b border-border transition-colors hover:bg-[color:var(--infra-elevated)]"
               >
-                <td className="px-6 py-3 font-mono text-accent">{asset.assetId}</td>
+                <td className="px-6 py-3 font-mono text-[color:var(--infra-text)]">{asset.assetId}</td>
                 <td className="px-6 py-3 font-medium text-text-primary">{asset.name}</td>
                 <td className="w-36 px-6 py-3">
                   <ConditionBar value={asset.condition} showLabel={false} size="sm" />

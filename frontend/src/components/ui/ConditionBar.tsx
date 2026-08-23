@@ -9,10 +9,10 @@ interface ConditionBarProps {
 }
 
 function getBarColor(value: number): string {
-  if (value >= 70) return 'bg-success'
-  if (value >= 50) return 'bg-warning'
-  if (value >= 30) return 'bg-orange-500'
-  return 'bg-critical'
+  if (value >= 70) return 'bg-[color:var(--risk-low)]'
+  if (value >= 50) return 'bg-[color:var(--risk-medium)]'
+  if (value >= 30) return 'bg-[color:var(--risk-high)]'
+  return 'bg-[color:var(--risk-critical)]'
 }
 
 export function ConditionBar({
@@ -29,17 +29,19 @@ export function ConditionBar({
       {showLabel && (
         <div className="flex items-center justify-between text-xs">
           <span className="text-text-secondary">Condition</span>
-          <span className="font-medium text-text-primary">{value}/{max}</span>
+          <span className="font-medium text-text-primary">
+            {value}/{max}
+          </span>
         </div>
       )}
       <div
         className={cn(
-          'w-full overflow-hidden rounded-full bg-white/5',
+          'w-full overflow-hidden rounded-sm bg-[color:var(--graphite)]',
           size === 'sm' ? 'h-1.5' : 'h-2',
         )}
       >
         <div
-          className={cn('h-full rounded-full transition-all duration-500', getBarColor(value))}
+          className={cn('h-full rounded-sm transition-all duration-500', getBarColor(value))}
           style={{ width: `${percent}%` }}
         />
       </div>

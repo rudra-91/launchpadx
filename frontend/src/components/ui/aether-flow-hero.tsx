@@ -14,6 +14,9 @@ interface AetherFlowHeroProps {
   description?: string
   ctaLabel?: string
   onCtaClick?: () => void
+  /** Canvas particle field only — for login/signup backgrounds */
+  backgroundOnly?: boolean
+  className?: string
 }
 
 const fadeUpVariants: Variants = {
@@ -35,6 +38,8 @@ export function AetherFlowHero({
   description = 'An intelligent, adaptive framework for creating fluid digital experiences that feel alive and respond to user interaction in real-time.',
   ctaLabel = 'Explore the Engine',
   onCtaClick,
+  backgroundOnly = false,
+  className,
 }: AetherFlowHeroProps) {
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
 
@@ -196,52 +201,60 @@ export function AetherFlowHero({
   }, [])
 
   return (
-    <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden">
+    <div
+      className={
+        backgroundOnly
+          ? `relative h-full min-h-screen w-full overflow-hidden ${className ?? ''}`
+          : `relative flex h-screen w-full flex-col items-center justify-center overflow-hidden ${className ?? ''}`
+      }
+    >
       <canvas ref={canvasRef} className="absolute top-0 left-0 h-full w-full" />
 
-      <div className="relative z-10 p-6 text-center">
-        <motion.div
-          custom={0}
-          variants={fadeUpVariants}
-          initial="hidden"
-          animate="visible"
-          className="mb-6 inline-flex items-center gap-2 rounded-full border border-purple-500/20 bg-purple-500/10 px-4 py-1.5 backdrop-blur-sm"
-        >
-          <Zap className="h-4 w-4 text-purple-400" />
-          <span className="text-sm font-medium text-gray-200">{badge}</span>
-        </motion.div>
-
-        <motion.h1
-          custom={1}
-          variants={fadeUpVariants}
-          initial="hidden"
-          animate="visible"
-          className="mb-6 bg-gradient-to-b from-white to-gray-400 bg-clip-text text-5xl font-bold tracking-tighter text-transparent md:text-8xl"
-        >
-          {title}
-        </motion.h1>
-
-        <motion.p
-          custom={2}
-          variants={fadeUpVariants}
-          initial="hidden"
-          animate="visible"
-          className="mx-auto mb-10 max-w-2xl text-lg text-gray-400"
-        >
-          {description}
-        </motion.p>
-
-        <motion.div custom={3} variants={fadeUpVariants} initial="hidden" animate="visible">
-          <button
-            type="button"
-            onClick={onCtaClick}
-            className="mx-auto flex items-center gap-2 rounded-lg bg-white px-8 py-4 font-semibold text-black shadow-lg transition-colors duration-300 hover:bg-gray-200"
+      {!backgroundOnly && (
+        <div className="relative z-10 p-6 text-center">
+          <motion.div
+            custom={0}
+            variants={fadeUpVariants}
+            initial="hidden"
+            animate="visible"
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-purple-500/20 bg-purple-500/10 px-4 py-1.5 backdrop-blur-sm"
           >
-            {ctaLabel}
-            <ArrowRight className="h-5 w-5" />
-          </button>
-        </motion.div>
-      </div>
+            <Zap className="h-4 w-4 text-purple-400" />
+            <span className="text-sm font-medium text-gray-200">{badge}</span>
+          </motion.div>
+
+          <motion.h1
+            custom={1}
+            variants={fadeUpVariants}
+            initial="hidden"
+            animate="visible"
+            className="mb-6 bg-gradient-to-b from-white to-gray-400 bg-clip-text text-5xl font-bold tracking-tighter text-transparent md:text-8xl"
+          >
+            {title}
+          </motion.h1>
+
+          <motion.p
+            custom={2}
+            variants={fadeUpVariants}
+            initial="hidden"
+            animate="visible"
+            className="mx-auto mb-10 max-w-2xl text-lg text-gray-400"
+          >
+            {description}
+          </motion.p>
+
+          <motion.div custom={3} variants={fadeUpVariants} initial="hidden" animate="visible">
+            <button
+              type="button"
+              onClick={onCtaClick}
+              className="mx-auto flex items-center gap-2 rounded-lg bg-white px-8 py-4 font-semibold text-black shadow-lg transition-colors duration-300 hover:bg-gray-200"
+            >
+              {ctaLabel}
+              <ArrowRight className="h-5 w-5" />
+            </button>
+          </motion.div>
+        </div>
+      )}
     </div>
   )
 }

@@ -133,11 +133,11 @@ export function MapView({
         const level = loc.priority.priority_level
         bounds.extend([loc.longitude, loc.latitude])
 
-        let levelColor = '#3b82f6'
-        if (level === 'CRITICAL') levelColor = '#ef4444'
-        else if (level === 'HIGH') levelColor = '#f59e0b'
-        else if (level === 'MEDIUM') levelColor = '#3b82f6'
-        else if (level === 'LOW') levelColor = '#10b981'
+        let levelColor = '#AEA7A3'
+        if (level === 'CRITICAL') levelColor = '#C45C4A'
+        else if (level === 'HIGH') levelColor = '#C47A3A'
+        else if (level === 'MEDIUM') levelColor = '#C4A35A'
+        else if (level === 'LOW') levelColor = '#6B8F71'
 
         const el = document.createElement('div')
         el.className = 'inspection-marker'
@@ -192,10 +192,10 @@ export function MapView({
             entEl.style.cssText = `
               width: 10px;
               height: 10px;
-              background: #a855f7;
-              border: 1.5px solid white;
+              background: #AEA7A3;
+              border: 1.5px solid rgba(242,240,236,0.7);
               border-radius: 50%;
-              box-shadow: 0 0 6px #a855f7;
+              box-shadow: 0 0 6px rgba(174,167,163,0.35);
             `
             const entMarker = new maplibregl.Marker({ element: entEl })
               .setLngLat([entity.longitude, entity.latitude])

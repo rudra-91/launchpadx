@@ -32,12 +32,12 @@ export function FeatureImportanceChart({ data }: FeatureImportanceChartProps) {
           />
           <Tooltip
             contentStyle={{
-              background: 'rgba(18,18,18,0.95)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: 12,
+              background: '#171717',
+              border: '1px solid #333333',
+              borderRadius: 8,
             }}
           />
-          <Bar dataKey="importance" fill="#60A5FA" radius={[0, 4, 4, 0]} fillOpacity={0.85} />
+          <Bar dataKey="importance" fill="#A0A0A0" radius={[0, 2, 2, 0]} fillOpacity={0.95} />
         </BarChart>
       </ResponsiveContainer>
     </GlassCard>
