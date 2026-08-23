@@ -23,7 +23,7 @@ from app.services.gis_service import fetch_gis_and_impact_data
 from app.services.priority_service import calculate_priority_score
 from app.services.risk_service import calculate_location_risk
 from app.services.xgboost_service import predict_road_risk
-from app.services.yolo_client import YOLOClient
+from app.services import yolo_service
 
 logger = logging.getLogger(__name__)
 
@@ -202,10 +202,11 @@ def extract_location_features(analyzed_images: list[AnalyzedImageOut]) -> dict[s
 async def analyze_inspections(
     locations: list[InspectionLocationInput],
     image_map: dict[str, UploadFile],
-    yolo_client: YOLOClient | None = None,
+    *,
+    predict_fn=None,
 ) -> InspectionAnalysisDataOut:
-    """Orchestrate calling YOLO per image, extract features, fetch GIS data, and rank by priority score."""
-    client = yolo_client or YOLOClient()
+    """Orchestrate YOLO (in-process) → features → XGBoost → GIS → priority ranking."""
+    run_yolo = predict_fn or yolo_service.predict_image
     unranked_locations: list[AnalyzedLocationOut] = []
 
     for loc in locations:
@@ -226,7 +227,7 @@ async def analyze_inspections(
             filename = upload_file.filename or f"{key}.jpg"
             content_type = upload_file.content_type or "image/jpeg"
 
-            prediction = await client.predict_image(
+            prediction = await run_yolo(
                 file_bytes=file_bytes,
                 filename=filename,
                 content_type=content_type,

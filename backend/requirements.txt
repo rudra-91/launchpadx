@@ -14,3 +14,10 @@ joblib>=1.4.0
 numpy>=1.26.0
 pandas>=2.2.0
 xgboost>=2.1.0
+
+# In-process YOLO (CPU). On Render, install torch from the CPU wheel index first:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+#   pip install -r requirements.txt
+pillow>=10.4.0
+ultralytics>=8.3.0
+torch>=2.2.0

@@ -3,9 +3,10 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# backend/ (launchpadx/backend) — works on Windows and Linux
+# backend/ (launchpadx/backend) — portable on Windows and Linux
 _BACKEND_ROOT = Path(__file__).resolve().parents[2]
 _DEFAULT_XGBOOST_MODEL_PATH = str(_BACKEND_ROOT / "models" / "xgboost_road_risk.joblib")
+_DEFAULT_YOLO_MODEL_PATH = str(_BACKEND_ROOT / "models" / "best.pt")
 
 
 class Settings(BaseSettings):
@@ -16,11 +17,12 @@ class Settings(BaseSettings):
     mongodb_url: str = "mongodb://localhost:27017"
     mongodb_db_name: str = "infrax"
     frontend_url: str = "http://localhost:5173"
-    ml_provider: str = "mock"
+    # Asset /api/predictions stub only (mock|xgboost). Inspection pipeline always uses real YOLO+XGBoost.
+    ml_provider: str = "real"
     ml_model_path: str | None = None
-    yolo_service_url: str = "http://127.0.0.1:8001"
-    # Override with env YOLO_SERVICE_URL for cloud; localhost:8001 remains the local default.
-    # Override with env XGBOOST_MODEL_PATH; default is backend/models/xgboost_road_risk.joblib
+    # Override with env YOLO_MODEL_PATH; default backend/models/best.pt
+    yolo_model_path: str = _DEFAULT_YOLO_MODEL_PATH
+    # Override with env XGBOOST_MODEL_PATH; default backend/models/xgboost_road_risk.joblib
     xgboost_model_path: str = _DEFAULT_XGBOOST_MODEL_PATH
 
 

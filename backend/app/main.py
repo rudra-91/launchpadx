@@ -28,15 +28,23 @@ settings = get_settings()
 
 app = FastAPI(title="INFRA-X API", version="1.0.0")
 
+# FRONTEND_URL should be the production Vercel origin, e.g. https://your-app.vercel.app
+_frontend = settings.frontend_url.rstrip("/")
+_cors_origins = list(
+    dict.fromkeys(
+        [
+            _frontend,
+            "http://localhost:5173",
+            "http://localhost:5174",
+            "http://127.0.0.1:5173",
+            "http://127.0.0.1:5174",
+        ]
+    )
+)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        settings.frontend_url,
-        "http://localhost:5173",
-        "http://localhost:5174",
-        "http://127.0.0.1:5173",
-        "http://127.0.0.1:5174",
-    ],
+    allow_origins=_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -61,11 +69,31 @@ def on_startup() -> None:
             ensure_indexes(db)
         except Exception as exc:
             logger.warning("Could not ensure database indexes: %s", exc)
+
+    yolo_ok = False
+    try:
+        from app.services.yolo_service import load_yolo_model
+
+        load_yolo_model()
+        yolo_ok = True
+    except Exception as exc:
+        logger.error("YOLO model failed to load at startup: %s", exc)
+
+    xgb_ok = False
+    try:
+        from app.services.xgboost_service import load_xgboost_model
+
+        xgb_ok = load_xgboost_model() is not None
+    except Exception as exc:
+        logger.error("XGBoost model failed to load at startup: %s", exc)
+
     logger.info(
-        "MongoDB connected=%s db=%s ML_PROVIDER=%s",
+        "MongoDB connected=%s db=%s ML_PROVIDER=%s YOLO_loaded=%s XGBoost_loaded=%s",
         mongo_ok,
         settings.mongodb_db_name,
         settings.ml_provider,
+        yolo_ok,
+        xgb_ok,
     )
 
 

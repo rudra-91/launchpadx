@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: infrax-api
+    runtime: python
+    rootDir: backend
+    plan: standard
+    buildCommand: pip install torch --index-url https://download.pytorch.org/whl/cpu && pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: ML_PROVIDER
+        value: real
+      - key: MONGODB_URL
+        sync: false
+      - key: MONGODB_DB_NAME
+        value: infrax
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
